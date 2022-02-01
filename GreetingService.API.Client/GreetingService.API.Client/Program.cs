@@ -253,4 +253,11 @@ public class GreetingServiceClient
             Console.WriteLine("There are no greetings to export");
         }
     }
+
+    private static async Task RepeatCallsAsync(int count)
+    {
+        var greetings = await GetGreetingsAsync();
+        var greeting = greetings.First();
+
+    }
 }
