@@ -47,6 +47,7 @@ namespace GreetingService.Infrastructure
         {
             var content = File.ReadAllText(_filePath);
             var greetings = JsonSerializer.Deserialize<IList<Greeting>>(content);
+            var existingGreeting = greetings?.FirstOrDefault(x => x.Id == greeting.Id);
 
             if (greetings.Any(x => x.Id == greeting.Id))
                 throw new Exception($"Greeting with ID: {greeting.Id} already exists");
