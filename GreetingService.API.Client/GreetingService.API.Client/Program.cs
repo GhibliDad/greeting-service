@@ -104,7 +104,7 @@ public class GreetingServiceClient
             else if (command.StartsWith(_deleteGreetingCommand, StringComparison.OrdinalIgnoreCase))
             {
                 var idPart = command.Replace(_deleteGreetingCommand, "").Trim();
-                
+
                 if (Guid.TryParse(idPart, out var id))
                 {
                     await DeleteGreetingAsync(id);
@@ -246,7 +246,7 @@ public class GreetingServiceClient
             var serializer = new XmlSerializer(typeof(List<Greeting>));
             serializer.Serialize(xmlWriter, greetings);
 
-            Console.WriteLine($"Exported {greetings.Count()} greetings to {filename}\n");        
+            Console.WriteLine($"Exported {greetings.Count()} greetings to {filename}\n");
         }
         else
         {
