@@ -1,0 +1,30 @@
+[
+  {
+    "Id": "11e7bbe8-2ef8-40cc-bb71-cb6850db06ee",
+    "Timestamp": "2022-01-28T17:01:47.7091648+01:00",
+    "From": "Towa",
+    "To": "Help Desk",
+    "Message": "3"
+  },
+  {
+    "Id": "9f10640b-c292-4701-9cc3-c1852a91c7e0",
+    "Timestamp": "2022-01-28T17:01:48.0671709+01:00",
+    "From": "Towa",
+    "To": "Help Desk",
+    "Message": "3"
+  },
+  {
+    "Id": "f84f08b5-4942-4037-9ce6-b1ed9fea10cc",
+    "Timestamp": "2022-01-28T17:01:48.4001584+01:00",
+    "From": "Towa",
+    "To": "Help Desk",
+    "Message": "3"
+  },
+  {
+    "Id": "117cf784-54aa-4f96-8ee1-513b1bb17264",
+    "Timestamp": "2022-01-28T17:01:55.5274306+01:00",
+    "From": "Towa",
+    "To": "Help Desk",
+    "Message": "3"
+  }
+]
