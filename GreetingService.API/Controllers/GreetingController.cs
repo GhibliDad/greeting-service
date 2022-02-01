@@ -54,26 +54,26 @@ namespace GreetingService.API.Controllers
 
         // GET api/<GreetingController>/5
         [HttpGet("{id}")]
-        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Greeting))]        //when we return IActionResult instead of Greeting, there is no way for swagger to know what the return type is, we need to explicitly state what it will return
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //public IActionResult Get(Guid id)
-        //{
-        //    var greeting = _greetingRepository.Get(id);
-        //    return Ok();
-        //    if (greeting == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    catch
-        //    {
-        //        return BadRequest();
-        //    }
-        //}
-
-        public Greeting Get(Guid id)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Greeting))]        //when we return IActionResult instead of Greeting, there is no way for swagger to know what the return type is, we need to explicitly state what it will return
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult Get(Guid id)
         {
-            return _greetingRepository.Get(id);
+            var greeting = _greetingRepository.Get(id);
+            return Ok();
+            if (greeting == null)
+            {
+                return NotFound();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
+
+        //public Greeting Get(Guid id)
+        //{
+        //    return _greetingRepository.Get(id);
+        //}
 
         // POST api/<GreetingController>
         [HttpPost]
