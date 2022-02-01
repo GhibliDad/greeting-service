@@ -12,15 +12,6 @@ namespace GreetingService.API.Controllers
     [BasicAuth]
     public class GreetingController : ControllerBase
     {
-        //[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-        //public class BasicAuthAttribute : TypeFilterAttribute
-        //{
-        //    public BasicAuthAttribute(string realm = @"My Realm") : base(typeof(BasicAuthFilter))
-        //    {
-        //        Arguments = new object[] { realm };
-        //    }
-        //}
-
         private readonly IGreetingRepository _greetingRepository;
 
         public GreetingController(IGreetingRepository greetingRepository)
@@ -33,60 +24,53 @@ namespace GreetingService.API.Controllers
         public IEnumerable<Greeting> Get()
         {
             return _greetingRepository.Get();
-            //return new Greeting[] 
-            //{
-            //    new Greeting()
-            //    {
-            //    Timestamp = DateTime.Now,
-            //        From = "Towa",
-            //        To = "Help Desk",
-            //        Message = "Hello!",
-            //    },
-            //    new Greeting()
-            //    {
-            //        Timestamp = DateTime.Now,
-            //        From = "Towa",
-            //        To = "Help Desk",
-            //        Message = "Hello! I need help!!",
-            //    },
-            //};
         }
 
         // GET api/<GreetingController>/5
         [HttpGet("{id}")]
-        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Greeting))]        //when we return IActionResult instead of Greeting, there is no way for swagger to know what the return type is, we need to explicitly state what it will return
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //public IActionResult Get(Guid id)
-        //{
-        //    var greeting = _greetingRepository.Get(id);
-        //    return Ok();
-        //    if (greeting == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    catch
-        //    {
-        //        return BadRequest();
-        //    }
-        //}
-
-        public Greeting Get(Guid id)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Greeting))]        //when we return IActionResult instead of Greeting, there is no way for swagger to know what the return type is, we need to explicitly state what it will return
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult Get(Guid id)
         {
-            return _greetingRepository.Get(id);
+            var greeting = _greetingRepository.Get(id);
+            if (greeting == null)
+                return NotFound();
+         
+            return BadRequest();
         }
 
         // POST api/<GreetingController>
         [HttpPost]
-        public void Post([FromBody] Greeting greeting)
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public IActionResult Post([FromBody] Greeting greeting)
         {
-            _greetingRepository.Create(greeting);
+            try
+            {
+                _greetingRepository.Create(greeting);
+                return Accepted();
+            }
+            catch                       //any exception will result in 409 Conflict which might not be true but we'll use this for now
+            {
+                return Conflict();
+            }
         }
 
         // PUT api/<GreetingController>/5
         [HttpPut]
-        public void Put([FromBody] Greeting greeting)
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult Put([FromBody] Greeting greeting)
         {
-            _greetingRepository.Update(greeting);
+            try
+            {
+                _greetingRepository.Update(greeting);
+                return Accepted();
+            }
+            catch
+            {
+                return NotFound($"Greeting with {greeting.Id} not found");
+            }
         }
 
         // DELETE api/<GreetingController>/5
