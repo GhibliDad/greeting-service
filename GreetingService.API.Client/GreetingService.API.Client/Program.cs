@@ -287,7 +287,7 @@ public class GreetingServiceClient
         var greeting = greetings.First();
 
         var jobs = new List<int>();
-        for (int i = 0; i < count; i++)
+        for (int i = 1; i <= count; i++)
         {
             jobs.Add(i);
         }
@@ -297,7 +297,7 @@ public class GreetingServiceClient
         foreach (var job in jobs)
         {
             var start = stopwatch.ElapsedMilliseconds;
-            var response = await _httpClient.GetAsync($"api/greeting/{greeting.id}");
+            var response = await _httpClient.GetAsync($"http://localhost:5299/api/greeting/{greeting.id}");
             var end = stopwatch.ElapsedMilliseconds;
 
             Console.WriteLine($"Response: {response.StatusCode} - Call: {job} - latency: {end - start} ms - rate/s: {job / stopwatch.Elapsed.TotalSeconds}");
