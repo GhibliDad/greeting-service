@@ -2,6 +2,7 @@
 using System.Net.Http.Json;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Diagnostics;
 
 namespace GreetingService.API.Client;
 
@@ -285,6 +286,21 @@ public class GreetingServiceClient
         var greetings = await GetGreetingsAsync();
         var greeting = greetings.First();
 
+        var jobs = new List<int>();
+        for (int i = 0; i < count; i++)
+        {
+            jobs.Add(i);
+        }
 
+        var stopwatch = Stopwatch.StartNew();
+
+        foreach (var job in jobs)
+        {
+            var start = stopwatch.ElapsedMilliseconds;
+            var response = await _httpClient.GetAsync($"api/greeting/{greeting.id}");
+            var end = stopwatch.ElapsedMilliseconds;
+
+            Console.WriteLine($"Response: {response.StatusCode} - Call: {job} - latency: {end - start} ms - rate/s: {job / stopwatch.Elapsed.TotalSeconds}");
+        }
     }
 }
