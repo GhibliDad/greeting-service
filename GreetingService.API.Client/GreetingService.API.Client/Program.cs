@@ -2,6 +2,7 @@
 using System.Net.Http.Json;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Diagnostics;
 
 namespace GreetingService.API.Client;
 
@@ -16,6 +17,7 @@ public class GreetingServiceClient
     private const string _deleteGreetingCommand = "delete greeting ";
     private const string _deleteAllGreetingsCommand = "delete all";
     private const string _exportGreetingsCommand = "export greetings";
+    private const string _repeatCallsCommand = "repeat calls ";
     private static string _from = "Batman";
     private static string _to = "Superman";
 
@@ -53,6 +55,7 @@ public class GreetingServiceClient
             Console.WriteLine($"{_deleteGreetingCommand} [id]");
             Console.WriteLine($"{_deleteAllGreetingsCommand}");
             Console.WriteLine(_exportGreetingsCommand);
+            Console.WriteLine($"{_repeatCallsCommand} [count]");
 
 
             Console.WriteLine("\nWrite command and press [enter] to execute");
@@ -136,6 +139,19 @@ public class GreetingServiceClient
             {
                 await ExportGreetingsAsync();
             }
+            else if (command.StartsWith(_repeatCallsCommand, StringComparison.OrdinalIgnoreCase))
+            {
+                var countPart = command.Replace(_repeatCallsCommand, "");
+
+                if (int.TryParse(countPart, out var count))
+                {
+                    await RepeatCallsAsync(count);
+                }
+                else
+                {
+                    Console.WriteLine($"Could not parse {countPart} as int");
+                }
+            }
             else
             {
                 Console.WriteLine("Command not recognized\n");
@@ -143,17 +159,28 @@ public class GreetingServiceClient
         }
     }
 
-    private static async Task GetGreetingsAsync()
+    private static async Task<IEnumerable<Greeting>> GetGreetingsAsync()
     {
-        var response = await _httpClient.GetAsync("http://localhost:5299/api/Greeting/");
-        var greetingsString = await response.Content.ReadAsStringAsync();
-        var greetings = JsonSerializer.Deserialize<IList<Greeting>>(greetingsString);
-
-        foreach (var greeting in greetings)
+        try
         {
-            //Console.WriteLine(greeting.message);
-            Console.WriteLine($"[{greeting.id}] [{greeting.timestamp}] ({greeting.from} -> {greeting.to}) - {greeting.message}");
+            var response = await _httpClient.GetAsync("http://localhost:5299/api/Greeting/");
+            var greetingsString = await response.Content.ReadAsStringAsync();
+            var greetings = JsonSerializer.Deserialize<IList<Greeting>>(greetingsString);
+
+            foreach (var greeting in greetings)
+            {
+                Console.WriteLine($"[{greeting.id}] [{greeting.timestamp}] ({greeting.from} -> {greeting.to}) - {greeting.message}");
+            }
+
+            Console.WriteLine();
+            return greetings;
         }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"Get greetings failed: {ex.Message}\n");
+        }
+
+        return Enumerable.Empty<Greeting>();
     }
 
     private static async Task GetGreetingAsync(Guid id)
@@ -251,6 +278,29 @@ public class GreetingServiceClient
         else
         {
             Console.WriteLine("There are no greetings to export");
+        }
+    }
+
+    private static async Task RepeatCallsAsync(int count)
+    {
+        var greetings = await GetGreetingsAsync();
+        var greeting = greetings.First();
+
+        var jobs = new List<int>();
+        for (int i = 0; i < count; i++)
+        {
+            jobs.Add(i);
+        }
+
+        var stopwatch = Stopwatch.StartNew();
+
+        foreach (var job in jobs)
+        {
+            var start = stopwatch.ElapsedMilliseconds;
+            var response = await _httpClient.GetAsync($"api/greeting/{greeting.id}");
+            var end = stopwatch.ElapsedMilliseconds;
+
+            Console.WriteLine($"Response: {response.StatusCode} - Call: {job} - latency: {end - start} ms - rate/s: {job / stopwatch.Elapsed.TotalSeconds}");
         }
     }
 }
