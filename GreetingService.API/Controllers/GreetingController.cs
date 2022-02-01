@@ -59,15 +59,10 @@ namespace GreetingService.API.Controllers
         public IActionResult Get(Guid id)
         {
             var greeting = _greetingRepository.Get(id);
-            return Ok();
             if (greeting == null)
-            {
                 return NotFound();
-            }
-            catch
-            {
-                return BadRequest();
-            }
+         
+            return BadRequest();
         }
 
         //public Greeting Get(Guid id)
