@@ -9,7 +9,7 @@ namespace GreetingService.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [BasicAuth]
+    //[BasicAuth]
     public class GreetingController : ControllerBase
     {
         private readonly IGreetingRepository _greetingRepository;
@@ -30,13 +30,13 @@ namespace GreetingService.API.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Greeting))]        //when we return IActionResult instead of Greeting, there is no way for swagger to know what the return type is, we need to explicitly state what it will return
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult Get(Guid id)
+        public ActionResult<Greeting> Get(Guid id)
         {
             var greeting = _greetingRepository.Get(id);
             if (greeting == null)
                 return NotFound();
          
-            return BadRequest();
+            return greeting;
         }
 
         // POST api/<GreetingController>
