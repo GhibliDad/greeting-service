@@ -9,7 +9,7 @@ namespace GreetingService.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[BasicAuth]
+    [BasicAuth]
     public class GreetingController : ControllerBase
     {
         private readonly IGreetingRepository _greetingRepository;
