@@ -300,7 +300,7 @@ public class GreetingServiceClient
         foreach (var job in jobs)
         {
             var start = stopwatch.ElapsedMilliseconds;
-            var response = await _httpClient.GetAsync($"greeting/{greeting.id}");
+            var response = await _httpClient.GetAsync($"api/greeting/{greeting.id}");
             var end = stopwatch.ElapsedMilliseconds;
 
             Console.WriteLine($"Message: {greeting.message} Response: {response.StatusCode} - Call: {job} - latency: {end - start} ms - rate/s: {job / stopwatch.Elapsed.TotalSeconds}");
