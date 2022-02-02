@@ -36,7 +36,7 @@ namespace GreetingService.API.Controllers
             if (greeting == null)
                 return NotFound();
          
-            return greeting;
+            return Ok(greeting);
         }
 
         // POST api/<GreetingController>

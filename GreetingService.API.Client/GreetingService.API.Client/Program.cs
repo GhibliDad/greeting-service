@@ -303,7 +303,7 @@ public class GreetingServiceClient
             var response = await _httpClient.GetAsync($"greeting/{greeting.id}");
             var end = stopwatch.ElapsedMilliseconds;
 
-            Console.WriteLine($"Response: {response.StatusCode} - Call: {job} - latency: {end - start} ms - rate/s: {job / stopwatch.Elapsed.TotalSeconds}");
+            Console.WriteLine($"Message: {greeting.message} Response: {response.StatusCode} - Call: {job} - latency: {end - start} ms - rate/s: {job / stopwatch.Elapsed.TotalSeconds}");
         }
     }
 }
