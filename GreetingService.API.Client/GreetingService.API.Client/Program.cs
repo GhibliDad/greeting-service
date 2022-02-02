@@ -166,7 +166,6 @@ public class GreetingServiceClient
     {
         try
         {
-            var response = await _httpClient.GetAsync("http://localhost:5299/api/Greeting/");
             var response = await _httpClient.GetAsync("api/Greeting/");
             var greetingsString = await response.Content.ReadAsStringAsync();
             var greetings = JsonSerializer.Deserialize<IList<Greeting>>(greetingsString);
