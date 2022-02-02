@@ -23,7 +23,7 @@ public class GreetingServiceClient
 
     public static async Task Main(string[] args)
     {
-        _httpClient.BaseAddress = new Uri("https://towa-greeting-service.azurewebsites.net/");
+        _httpClient.BaseAddress = new Uri("https://towa-appservice-dev.azurewebsites.net/");
         //_httpClient.BaseAddress = new Uri("http://localhost:5299/");
 
         Console.WriteLine(@"
