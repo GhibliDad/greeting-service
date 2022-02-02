@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Diagnostics;
+using System.Text;
 
 namespace GreetingService.API.Client;
 
@@ -23,6 +24,9 @@ public class GreetingServiceClient
 
     public static async Task Main(string[] args)
     {
+        var authParam = Convert.ToBase64String(Encoding.UTF8.GetBytes("towa:MrBlobby"));
+        _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authParam);        //Always send this header for all requests from this HttpClient
+
         _httpClient.BaseAddress = new Uri("https://towa-appservice-dev.azurewebsites.net/");
         //_httpClient.BaseAddress = new Uri("http://localhost:5299/");
 

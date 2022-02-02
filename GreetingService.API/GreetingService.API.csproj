@@ -4,10 +4,13 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationInsightsResourceId>/subscriptions/5bb1b2d9-ed37-4ee3-9053-56954eaa90c7/resourcegroups/towa-rg-dev/providers/Microsoft.Insights/components/towa-appinsights-dev</ApplicationInsightsResourceId>
+    <UserSecretsId>a59e9aea-db5b-4195-8afa-a236b8ad39f7</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="IdentityServer3" Version="2.6.3" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.15.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
