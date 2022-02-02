@@ -23,6 +23,9 @@ public class GreetingServiceClient
 
     public static async Task Main(string[] args)
     {
+        _httpClient.BaseAddress = new Uri("https://towa-greeting-service.azurewebsites.net/");
+        //_httpClient.BaseAddress = new Uri("http://localhost:5299/");
+
         Console.WriteLine(@"
   ▄████  ██▀███  ▓█████ ▓█████▄▄▄█████▓ ██▓ ███▄    █   ▄████   ██████  ▐██▌ 
  ██▒ ▀█▒▓██ ▒ ██▒▓█   ▀ ▓█   ▀▓  ██▒ ▓▒▓██▒ ██ ▀█   █  ██▒ ▀█▒▒██    ▒  ▐██▌ 
@@ -163,7 +166,7 @@ public class GreetingServiceClient
     {
         try
         {
-            var response = await _httpClient.GetAsync("http://localhost:5299/api/Greeting/");
+            var response = await _httpClient.GetAsync("api/Greeting/");
             var greetingsString = await response.Content.ReadAsStringAsync();
             var greetings = JsonSerializer.Deserialize<IList<Greeting>>(greetingsString);
 
@@ -185,7 +188,7 @@ public class GreetingServiceClient
 
     private static async Task GetGreetingAsync(Guid id)
     {
-        var response = await _httpClient.GetAsync($"http://localhost:5299/api/greeting/{id}");
+        var response = await _httpClient.GetAsync($"api/greeting/{id}");
         response.EnsureSuccessStatusCode();
         var responseBody = await response.Content.ReadAsStringAsync();
 
@@ -204,7 +207,7 @@ public class GreetingServiceClient
         //var serialized = JsonSerializer.Serialize(greeting);
         //var content = new StringContent(serialized);
         //content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-        var response = await _httpClient.PostAsJsonAsync("http://localhost:5299/api/Greeting", greeting);
+        var response = await _httpClient.PostAsJsonAsync("api/Greeting", greeting);
 
         Console.WriteLine($"Status: {response.StatusCode}");
     }
@@ -221,21 +224,21 @@ public class GreetingServiceClient
         //var serialized = JsonSerializer.Serialize(greeting);
         //var content = new StringContent(serialized);
         //content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-        var response = await _httpClient.PutAsJsonAsync("http://localhost:5299/api/Greeting", greeting);
+        var response = await _httpClient.PutAsJsonAsync("api/Greeting", greeting);
 
         Console.WriteLine($"Status: {response.StatusCode}");
     }
 
     private static async Task DeleteGreetingAsync(Guid id)
     {
-        await _httpClient.DeleteAsync($"http://localhost:5299/api/greeting/{id}");
+        await _httpClient.DeleteAsync($"api/greeting/{id}");
 
         Console.WriteLine($"Greeting with ID: {id} deleted.");
     }
 
     private static async Task DeleteAllGreetingsAsync()
     {
-        var response = await _httpClient.GetAsync("http://localhost:5299/api/Greeting/");
+        var response = await _httpClient.GetAsync("api/Greeting/");
         var greetingsString = await response.Content.ReadAsStringAsync();
         var greetings = JsonSerializer.Deserialize<IList<Greeting>>(greetingsString);
 
@@ -249,7 +252,7 @@ public class GreetingServiceClient
             //foreach (var greeting in greetings)
             //{
             //    var id = greeting.id;
-            //    await _httpClient.DeleteAsync($"http://localhost:5299/api/Greeting/{id}");
+            //    await _httpClient.DeleteAsync($"api/Greeting/{id}");
             //}
             Console.WriteLine("All greetings deleted.");
         }
@@ -257,7 +260,7 @@ public class GreetingServiceClient
 
     private static async Task ExportGreetingsAsync()
     {
-        var response = await _httpClient.GetAsync("http://localhost:5299/api/Greeting/");
+        var response = await _httpClient.GetAsync("api/Greeting/");
         response.EnsureSuccessStatusCode();
         var greetingsString = await response.Content.ReadAsStringAsync();
         var greetings = JsonSerializer.Deserialize<IList<Greeting>>(greetingsString);
@@ -297,7 +300,7 @@ public class GreetingServiceClient
         foreach (var job in jobs)
         {
             var start = stopwatch.ElapsedMilliseconds;
-            var response = await _httpClient.GetAsync($"http://localhost:5299/api/greeting/{greeting.id}");
+            var response = await _httpClient.GetAsync($"greeting/{greeting.id}");
             var end = stopwatch.ElapsedMilliseconds;
 
             Console.WriteLine($"Response: {response.StatusCode} - Call: {job} - latency: {end - start} ms - rate/s: {job / stopwatch.Elapsed.TotalSeconds}");
