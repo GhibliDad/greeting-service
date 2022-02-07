@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreetingService.API.Client"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreetingService.API", "GreetingService.API\GreetingService.API.csproj", "{402443ED-6A5A-472D-979A-C0096F83E687}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreetingService.API.Function", "GreetingService.API.Function\GreetingService.API.Function.csproj", "{3B3B514B-4B52-46D7-8A23-A2A252D450C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{402443ED-6A5A-472D-979A-C0096F83E687}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{402443ED-6A5A-472D-979A-C0096F83E687}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{402443ED-6A5A-472D-979A-C0096F83E687}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B3B514B-4B52-46D7-8A23-A2A252D450C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B3B514B-4B52-46D7-8A23-A2A252D450C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B3B514B-4B52-46D7-8A23-A2A252D450C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B3B514B-4B52-46D7-8A23-A2A252D450C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
