@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -13,29 +14,36 @@ using Microsoft.OpenApi.Models;
 
 namespace GreetingService.API.Function
 {
-    public class GetGreetings
+    public class GetGreeting
     {
-        private readonly ILogger<GetGreetings> _logger;
+        private readonly ILogger<GetGreeting> _logger;
         private readonly IGreetingRepository _greetingRepository;
 
-        public GetGreetings(ILogger<GetGreetings> log, IGreetingRepository greetingRepository)
+        public GetGreeting(ILogger<GetGreeting> log, IGreetingRepository greetingRepository)
         {
             _logger = log;
             _greetingRepository = greetingRepository;
         }
 
-        [FunctionName("GetGreetings")]
+        [FunctionName("GetGreeting")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Greeting" })]
         [OpenApiParameter(name: "name", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **Name** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(string), Description = "The OK response")]
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Description = "Not found")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "greeting")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "greeting/{id}")] HttpRequest req, string id)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            var greetings = _greetingRepository.Get();
+            if (!Guid.TryParse(id, out var idGuid))
+                return new BadRequestObjectResult($"{id} is not a valid Guid");
 
-            return new OkObjectResult(greetings);
+            var greeting = _greetingRepository.Get(idGuid);
+
+            if (greeting == null)
+                return new NotFoundObjectResult("Not found");
+
+            return new OkObjectResult(greeting);
         }
     }
 }

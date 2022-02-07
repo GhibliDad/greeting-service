@@ -1,6 +1,8 @@
 using System.IO;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
+using GreetingService.Core.Entities;
 using GreetingService.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,29 +15,38 @@ using Microsoft.OpenApi.Models;
 
 namespace GreetingService.API.Function
 {
-    public class GetGreetings
+    public class PostGreeting
     {
-        private readonly ILogger<GetGreetings> _logger;
+        private readonly ILogger<PostGreeting> _logger;
         private readonly IGreetingRepository _greetingRepository;
 
-        public GetGreetings(ILogger<GetGreetings> log, IGreetingRepository greetingRepository)
+        public PostGreeting(ILogger<PostGreeting> log, IGreetingRepository greetingRepository)
         {
             _logger = log;
             _greetingRepository = greetingRepository;
         }
 
-        [FunctionName("GetGreetings")]
+        [FunctionName("PostGreeting")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Greeting" })]
-        [OpenApiParameter(name: "name", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **Name** parameter")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(string), Description = "The OK response")]
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.Accepted, Description = "Accepted")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "greeting")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "greeting")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            var greetings = _greetingRepository.Get();
+            var body = await req.ReadAsStringAsync();
+            var greeting = JsonSerializer.Deserialize<Greeting>(body);
 
-            return new OkObjectResult(greetings);
+            try
+            {
+                _greetingRepository.Create(greeting);
+            }
+            catch
+            {
+                return new ConflictResult();
+            }
+
+            return new AcceptedResult();
         }
     }
 }
