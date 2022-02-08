@@ -1,6 +1,7 @@
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using GreetingService.API.Function.Authentication;
 using GreetingService.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +18,13 @@ namespace GreetingService.API.Function
     {
         private readonly ILogger<DeletGreetings> _logger;
         private readonly IGreetingRepository _greetingRepository;
+        private readonly IAuthHandler _authHandler;
 
-        public DeletGreetings(ILogger<DeletGreetings> log, IGreetingRepository greetingRepository)
+        public DeletGreetings(ILogger<DeletGreetings> log, IGreetingRepository greetingRepository, IAuthHandler authHandler)
         {
             _logger = log;
             _greetingRepository = greetingRepository;
+            _authHandler = authHandler;
         }
 
         [FunctionName("DeletGreetings")]
@@ -31,6 +34,9 @@ namespace GreetingService.API.Function
             [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "greeting")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
+
+            if (!_authHandler.IsAuthorized(req))
+                return new UnauthorizedResult();
 
             _greetingRepository.DeleteAll();
 

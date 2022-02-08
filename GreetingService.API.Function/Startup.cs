@@ -1,4 +1,5 @@
-﻿using GreetingService.Core;
+﻿using GreetingService.API.Function.Authentication;
+using GreetingService.Core;
 using GreetingService.Core.Interfaces;
 using GreetingService.Infrastructure;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
@@ -15,9 +16,13 @@ namespace GreetingService.API.Function
         {
             builder.Services.AddHttpClient();
 
+            builder.Services.AddLogging();
+
             builder.Services.AddSingleton<IGreetingRepository, MemoryGreetingRepository>();
 
             builder.Services.AddScoped<IUserService, AppSettingsUserService>();
+
+            builder.Services.AddScoped<IAuthHandler, BasicAuthHandler>();
         }
     }
 }

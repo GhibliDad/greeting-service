@@ -2,6 +2,7 @@ using System.IO;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
+using GreetingService.API.Function.Authentication;
 using GreetingService.Core.Entities;
 using GreetingService.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -19,11 +20,13 @@ namespace GreetingService.API.Function
     {
         private readonly ILogger<PostGreeting> _logger;
         private readonly IGreetingRepository _greetingRepository;
+        private readonly IAuthHandler _authHandler;
 
-        public PostGreeting(ILogger<PostGreeting> log, IGreetingRepository greetingRepository)
+        public PostGreeting(ILogger<PostGreeting> log, IGreetingRepository greetingRepository, IAuthHandler authHandler)
         {
             _logger = log;
             _greetingRepository = greetingRepository;
+            _authHandler = authHandler;
         }
 
         [FunctionName("PostGreeting")]
@@ -33,6 +36,9 @@ namespace GreetingService.API.Function
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "greeting")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
+
+            if (!_authHandler.IsAuthorized(req))
+                return new UnauthorizedResult();
 
             var body = await req.ReadAsStringAsync();
             var greeting = JsonSerializer.Deserialize<Greeting>(body);
