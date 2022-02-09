@@ -1,4 +1,4 @@
-param appName string = 
+param appName string
 param location string = resourceGroup().location
 
 // storage accounts must be between 3 and 24 characters in length and use numbers and lower-case letters only
@@ -13,7 +13,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   kind: 'StorageV2'
   sku: {
     name: 'Standard_LRS'
-    tier: 'Standard'
   }
 }
 
@@ -48,7 +47,6 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
   properties: {
     httpsOnly: true
     serverFarmId: hostingPlan.id
-    clientAffinityEnabled: true
     siteConfig: {
       appSettings: [
         {
@@ -61,7 +59,7 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
         }
         {
           'name': 'FUNCTIONS_EXTENSION_VERSION'
-          'value': '~3'
+          'value': '~4'
         }
         {
           'name': 'FUNCTIONS_WORKER_RUNTIME'
@@ -76,10 +74,4 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
       ]
     }
   }
-
-  dependsOn: [
-    appInsights
-    hostingPlan
-    storageAccount
-  ]
 }
