@@ -14,13 +14,13 @@ using Newtonsoft.Json;
 
 namespace GreetingService.API.Function
 {
-    public class DeletGreetings
+    public class DeleteGreetings
     {
-        private readonly ILogger<DeletGreetings> _logger;
+        private readonly ILogger<DeleteGreetings> _logger;
         private readonly IGreetingRepository _greetingRepository;
         private readonly IAuthHandler _authHandler;
 
-        public DeletGreetings(ILogger<DeletGreetings> log, IGreetingRepository greetingRepository, IAuthHandler authHandler)
+        public DeleteGreetings(ILogger<DeleteGreetings> log, IGreetingRepository greetingRepository, IAuthHandler authHandler)
         {
             _logger = log;
             _greetingRepository = greetingRepository;
@@ -38,7 +38,7 @@ namespace GreetingService.API.Function
             if (!_authHandler.IsAuthorized(req))
                 return new UnauthorizedResult();
 
-            _greetingRepository.DeleteAll();
+            await _greetingRepository.DeleteAll();
 
             return new OkObjectResult("All greetings deleted!");
         }

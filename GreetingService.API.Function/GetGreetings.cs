@@ -39,7 +39,7 @@ namespace GreetingService.API.Function
             if (!_authHandler.IsAuthorized(req))
                 return new UnauthorizedResult();
 
-            var greetings = _greetingRepository.Get();
+            var greetings = await _greetingRepository.GetAsync();
 
             return new OkObjectResult(greetings);
         }
