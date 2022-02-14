@@ -14,7 +14,6 @@ namespace GreetingService.Core.Interfaces
         public Task CreateAsync(Greeting greeting);
         public Task UpdateAsync(Greeting greeting);
         public Task DeleteAsync(Guid id);
-        public Task DeleteAll();
-
+        public Task DeleteAllAsync();
     }
 }

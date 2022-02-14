@@ -38,7 +38,7 @@ namespace GreetingService.API.Function
             if (!_authHandler.IsAuthorized(req))
                 return new UnauthorizedResult();
 
-            await _greetingRepository.DeleteAll();
+            await _greetingRepository.DeleteAllAsync();
 
             return new OkObjectResult("All greetings deleted!");
         }
