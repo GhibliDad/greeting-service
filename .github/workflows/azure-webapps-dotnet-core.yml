@@ -52,6 +52,9 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
+        
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
@@ -110,3 +113,7 @@ jobs:
           inlineScript: |
             az group create -l westeurope -n towa-rg-dev
             az deployment group create --resource-group towa-rg-dev --template-file ./azure_resources.bicep --parameters appName=towafunctionapp
+
+      - name: Sleep for 40 seconds
+        run: sleep 60s
+        shell: bash
