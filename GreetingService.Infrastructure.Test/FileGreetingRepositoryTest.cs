@@ -113,5 +113,3 @@ namespace GreetingService.Infrastructure.Test
         }
     }
 }
-
-//Just adding a comment
