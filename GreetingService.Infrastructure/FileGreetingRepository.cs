@@ -25,25 +25,21 @@ namespace GreetingService.Infrastructure
             _filePath = filePath;           
         }
 
-        public FileGreetingRepository()
-        {
-        }
-
-        public IEnumerable<Greeting> Get()
+        public async Task<IEnumerable<Greeting>> GetAsync()
         {
             var content = File.ReadAllText(_filePath);
             var greetings = JsonSerializer.Deserialize<IList<Greeting>>(content);
             return greetings;
         }
 
-        public Greeting Get(Guid id)
+        public async Task<Greeting> GetAsync(Guid id)
         {
             var content = File.ReadAllText(_filePath);
             var greetings = JsonSerializer.Deserialize<IList<Greeting>>(content);
             return greetings?.FirstOrDefault(x => x.Id == id);
         }
 
-        public void Create(Greeting greeting)
+        public async Task CreateAsync(Greeting greeting)
         {
             var content = File.ReadAllText(_filePath);
             var greetings = JsonSerializer.Deserialize<IList<Greeting>>(content);
@@ -57,7 +53,7 @@ namespace GreetingService.Infrastructure
             File.WriteAllText(_filePath, JsonSerializer.Serialize(greetings, _jsonSerializerOptions));
         }
 
-        public void Update(Greeting greeting)
+        public async Task UpdateAsync(Greeting greeting)
         {
             var content = File.ReadAllText(_filePath);
             var greetings = JsonSerializer.Deserialize<IList<Greeting>>(content);
@@ -73,7 +69,7 @@ namespace GreetingService.Infrastructure
             File.WriteAllText(_filePath, JsonSerializer.Serialize(greetings, _jsonSerializerOptions));
         }
 
-        public void Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var content = File.ReadAllText(_filePath);
             var greetings = JsonSerializer.Deserialize<List<Greeting>>(content);
@@ -87,7 +83,7 @@ namespace GreetingService.Infrastructure
             File.WriteAllText(_filePath, JsonSerializer.Serialize(greetings, _jsonSerializerOptions));
         }
 
-        public void DeleteAll()
+        public async Task DeleteAllAsync()
         {
             var content = File.ReadAllText(_filePath);
             var greetings = JsonSerializer.Deserialize<IList<Greeting>>(content);

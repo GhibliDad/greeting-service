@@ -49,5 +49,3 @@ namespace GreetingService.API.Function
         }
     }
 }
-
-//Here we goooo!!!!
