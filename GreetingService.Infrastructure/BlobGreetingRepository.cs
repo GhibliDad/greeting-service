@@ -26,29 +26,26 @@ namespace GreetingService.Infrastructure
 
         public async Task CreateAsync(Greeting greeting)
         {
-            var content = File.ReadAllText(_filePath);
-            var greetings = JsonSerializer.Deserialize<IList<Greeting>>(content);
-            var existingGreeting = greetings?.FirstOrDefault(x => x.Id == greeting.Id);
-
-            if (greetings.Any(x => x.Id == greeting.Id))
+            var blob = _blobContainerClient.GetBlobClient(greeting.Id.ToString());
+            if (await blob.ExistsAsync())
                 throw new Exception($"Greeting with ID: {greeting.Id} already exists");
 
-            greetings.Add(greeting);
-
-            File.WriteAllText(_filePath, JsonSerializer.Serialize(greetings, _jsonSerializerOptions));
+            var greetingBinary = new BinaryData(greeting, _jsonSerializerOptions);
+            await blob.UploadAsync(greetingBinary);
         }
 
         public async Task<Greeting> GetAsync(Guid id)
         {
-            var greetings = new List<Greeting>();
+            //var greetings = new List<Greeting>();
             var blobClient = _blobContainerClient.GetBlobClient(id.ToString());
-            if (await blobClient.ExistsAsync()){
+            if (await blobClient.ExistsAsync())
+            {
                 var blobContent = await blobClient.DownloadContentAsync();
                 var greeting = blobContent.Value.Content.ToObjectFromJson<Greeting>();
                 return greeting;
             }
             
-            return null;
+            throw new Exception($"Greeting with ID: {id} not found");
         }
 
         public async Task<IEnumerable<Greeting>> GetAsync()
@@ -68,17 +65,34 @@ namespace GreetingService.Infrastructure
 
         public async Task UpdateAsync(Greeting greeting)
         {
-            throw new NotImplementedException();
+            var blobClient = _blobContainerClient.GetBlobClient(greeting.Id.ToString());
+            await blobClient.DeleteIfExistsAsync();
+            var greetingBinary = new BinaryData(greeting, _jsonSerializerOptions);
+            await blobClient.UploadAsync(greetingBinary);
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            //var blobClient = _blobContainerClient.GetBlobClient(id.ToString());
+            //await blobClient.DeleteIfExistsAsync();
+
+            var blobClient = _blobContainerClient.GetBlobClient(id.ToString());
+            if (await blobClient.ExistsAsync())
+            {
+                await blobClient.DeleteAsync();
+            }
+
+            throw new Exception($"Delete Failed. Greeting with ID: {id} not found.");
         }
 
         public async Task DeleteAllAsync()
         {
-            throw new NotImplementedException();
+            var blobs = _blobContainerClient.GetBlobsAsync();
+            await foreach (var blob in blobs)
+            {
+                var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+                await blobClient.DeleteAsync();
+            }
         }
     }
 }
