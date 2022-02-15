@@ -23,31 +23,58 @@ namespace GreetingService.Infrastructure
             _blobContainerClient = new BlobContainerClient(connectionString, _blobContainerName);
             _blobContainerClient.CreateIfNotExists();
         }
-        public Task<IEnumerable<Greeting>> GetAsync()
+        public async Task<IEnumerable<Greeting>> GetAsync()
+        {
+            var greetings = new List<Greeting>();
+            var blobs = _blobContainerClient.GetBlobsAsync();
+            await foreach (var blob in blobs)
+            {
+                var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+                var blobContent = await blobClient.DownloadContentAsync();
+                var greeting = blobContent.Value.Content.ToObjectFromJson<Greeting>();
+                greetings.Add(greeting);
+            }
+            
+            return greetings;
+        }
+
+        public async Task<Greeting> GetAsync(Guid id)
+        {
+            var greetings = new List<Greeting>();
+            var blobClient = _blobContainerClient.GetBlobClient(id.ToString());
+            if (await blobClient.ExistsAsync()){
+                var blobContent = await blobClient.DownloadContentAsync();
+                var greeting = blobContent.Value.Content.ToObjectFromJson<Greeting>();
+                return greeting;
+            }
+            
+            return null;
+        }
+
+        public async Task CreateAsync(Greeting greeting)
+        {
+            var content = File.ReadAllText(_filePath);
+            var greetings = JsonSerializer.Deserialize<IList<Greeting>>(content);
+            var existingGreeting = greetings?.FirstOrDefault(x => x.Id == greeting.Id);
+
+            if (greetings.Any(x => x.Id == greeting.Id))
+                throw new Exception($"Greeting with ID: {greeting.Id} already exists");
+
+            greetings.Add(greeting);
+
+            File.WriteAllText(_filePath, JsonSerializer.Serialize(greetings, _jsonSerializerOptions));
+        }
+        public async Task UpdateAsync(Greeting greeting)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Greeting> GetAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task CreateAsync(Greeting greeting)
-        {
-            throw new NotImplementedException();
-        }
-        public Task UpdateAsync(Greeting greeting)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteAllAsync()
+        public async Task DeleteAllAsync()
         {
             throw new NotImplementedException();
         }
