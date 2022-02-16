@@ -1,6 +1,7 @@
 using GreetingService.Core;
 using GreetingService.Core.Interfaces;
-using GreetingService.Infrastructure;
+using GreetingService.Infrastructure.GreetingRepository;
+using GreetingService.Infrastructure.UserService;
 using Microsoft.AspNetCore.Mvc;
 
 

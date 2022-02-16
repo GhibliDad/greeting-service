@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GreetingService.Core;
 
-namespace GreetingService.Infrastructure
+namespace GreetingService.Infrastructure.UserService
 {
     public class HardCodedUserService : IUserService
     {

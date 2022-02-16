@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace GreetingService.Infrastructure
+namespace GreetingService.Infrastructure.UserService
 {
     public class BlobUserService : IUserService
     {
@@ -25,7 +25,12 @@ namespace GreetingService.Infrastructure
 
         public bool IsValidUser(string username, string password)
         {
-            throw new NotImplementedException();
+            if ()
+            {
+
+            }
+
+            return false;
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GreetingService.Infrastructure
+namespace GreetingService.Infrastructure.GreetingRepository
 {
     public class MemoryGreetingRepository : IGreetingRepository
     {
@@ -22,7 +22,7 @@ namespace GreetingService.Infrastructure
             return _repository.FirstOrDefault(x => x.Id == id);
         }
 
-        public async Task <IEnumerable<Greeting>> GetAsync()
+        public async Task<IEnumerable<Greeting>> GetAsync()
         {
             return _repository;
         }

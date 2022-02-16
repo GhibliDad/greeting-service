@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace GreetingService.Infrastructure
+namespace GreetingService.Infrastructure.GreetingRepository
 {
     public class BlobGreetingRepository : IGreetingRepository
     {
@@ -44,7 +44,7 @@ namespace GreetingService.Infrastructure
                 var greeting = blobContent.Value.Content.ToObjectFromJson<Greeting>();
                 return greeting;
             }
-            
+
             throw new Exception($"Greeting with ID: {id} not found");
         }
 
@@ -59,7 +59,7 @@ namespace GreetingService.Infrastructure
                 var greeting = blobContent.Value.Content.ToObjectFromJson<Greeting>();
                 greetings.Add(greeting);
             }
-            
+
             return greetings;
         }
 

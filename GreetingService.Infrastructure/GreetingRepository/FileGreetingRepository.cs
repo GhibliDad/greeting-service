@@ -7,9 +7,9 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace GreetingService.Infrastructure
+namespace GreetingService.Infrastructure.GreetingRepository
 {
-    public class FileGreetingRepository : IGreetingRepository 
+    public class FileGreetingRepository : IGreetingRepository
     {
         private readonly string _filePath = "greetings.json";
         private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true, };
@@ -19,10 +19,10 @@ namespace GreetingService.Infrastructure
             //if (string.IsNullOrEmpty(filePath))
             //    throw new ArgumentNullException();
 
-            if (!File.Exists(filePath))            
+            if (!File.Exists(filePath))
                 File.WriteAllText(filePath, "[]");     //init file with empty json array
-            
-            _filePath = filePath;           
+
+            _filePath = filePath;
         }
 
         public async Task<IEnumerable<Greeting>> GetAsync()
@@ -73,13 +73,13 @@ namespace GreetingService.Infrastructure
         {
             var content = File.ReadAllText(_filePath);
             var greetings = JsonSerializer.Deserialize<List<Greeting>>(content);
-            var greeting = greetings?.FirstOrDefault( x => x.Id == id);
+            var greeting = greetings?.FirstOrDefault(x => x.Id == id);
 
             if (greeting == null)
                 throw new Exception($"Greeting with ID: {id} does not exist");
 
             greetings.Remove(greeting);
-      
+
             File.WriteAllText(_filePath, JsonSerializer.Serialize(greetings, _jsonSerializerOptions));
         }
 
