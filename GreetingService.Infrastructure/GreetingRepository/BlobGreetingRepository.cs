@@ -26,26 +26,29 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
         public async Task CreateAsync(Greeting greeting)
         {
-            var blob = _blobContainerClient.GetBlobClient(greeting.Id.ToString());
-            if (await blob.ExistsAsync())
+            var blobName = $"{greeting.From}/{greeting.To}/{greeting.Id}";
+            var blobClient = _blobContainerClient.GetBlobClient(blobName);
+
+            if (await blobClient.ExistsAsync())
                 throw new Exception($"Greeting with ID: {greeting.Id} already exists");
 
             var greetingBinary = new BinaryData(greeting, _jsonSerializerOptions);
-            await blob.UploadAsync(greetingBinary);
+            await blobClient.UploadAsync(greetingBinary);
         }
 
         public async Task<Greeting> GetAsync(Guid id)
         {
-            //var greetings = new List<Greeting>();
-            var blobClient = _blobContainerClient.GetBlobClient(id.ToString());
-            if (await blobClient.ExistsAsync())
-            {
-                var blobContent = await blobClient.DownloadContentAsync();
-                var greeting = blobContent.Value.Content.ToObjectFromJson<Greeting>();
-                return greeting;
-            }
+            var blobs = _blobContainerClient.GetBlobsAsync();
+            var blob = await blobs.FirstOrDefaultAsync(x => x.Name.EndsWith(id.ToString()));
 
-            throw new Exception($"Greeting with ID: {id} not found");
+            if (blob == null)
+                throw new Exception($"Greeting with ID: {id} does not exist.");
+
+            var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+            var blobContent = await blobClient.DownloadContentAsync();
+            var greeting = blobContent.Value.Content.ToObjectFromJson<Greeting>();
+            
+            return greeting;
         }
 
         public async Task<IEnumerable<Greeting>> GetAsync()
