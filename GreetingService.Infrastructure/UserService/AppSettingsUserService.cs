@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GreetingService.Infrastructure
+namespace GreetingService.Infrastructure.UserService
 {
     public class AppSettingsUserService : IUserService
     {
@@ -24,7 +24,7 @@ namespace GreetingService.Infrastructure
         {
             var storedPassword = _configuration[username];
 
-            if ((storedPassword != null) && (storedPassword == password))
+            if (storedPassword != null && storedPassword == password)
             {
                 _logger.LogInformation("Valid credentials for {username}", username);
                 return true;
