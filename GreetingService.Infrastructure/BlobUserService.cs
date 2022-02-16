@@ -12,9 +12,9 @@ namespace GreetingService.Infrastructure
 {
     public class BlobUserService : IUserService
     {
-        private const string _blobContainerName = "greetings";
+        private const string _blobContainerName = "users";
+        private const string _blobName = "users.json";
         private readonly BlobContainerClient _blobContainerClient;
-        private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true, };
 
         public BlobUserService(IConfiguration configuration)
         {
