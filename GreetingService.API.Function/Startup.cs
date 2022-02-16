@@ -42,13 +42,12 @@ namespace GreetingService.API.Function
             });
 
             //builder.Services.AddSingleton<IGreetingRepository, MemoryGreetingRepository>();
-            builder.Services.AddSingleton<IGreetingRepository, BlobGreetingRepository>();
+            builder.Services.AddScoped<IGreetingRepository, BlobGreetingRepository>();
 
             //builder.Services.AddScoped<IUserService, AppSettingsUserService>();
             builder.Services.AddScoped<IUserService, BlobUserService>();
 
             builder.Services.AddScoped<IAuthHandler, BasicAuthHandler>();
-
         }
     }
 }
