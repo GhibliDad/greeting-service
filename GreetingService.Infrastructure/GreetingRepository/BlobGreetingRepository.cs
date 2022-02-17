@@ -114,7 +114,7 @@ namespace GreetingService.Infrastructure.GreetingRepository
             var blobs = blobContainerClient.GetBlobsAsync();
             await foreach (var blob in blobs)
             {
-                var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+                var blobClient = blobContainerClient.GetBlobClient(blob.Name);
                 await blobClient.DeleteAsync();
             }
         }
@@ -130,7 +130,7 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
                 if (!string.IsNullOrWhiteSpace(to))
                 {
-                    prefix = $"{from}/{to}";
+                    prefix = $"{prefix}/{to}";
                 }
             }
 
@@ -141,7 +141,7 @@ namespace GreetingService.Infrastructure.GreetingRepository
             {
                 var blobNameParts = blob.Name.Split('/');
              
-                if (from != null && to != null && blob.Name.StartsWith(prefix))
+                if (from != null && to != null && blob.Name.StartsWith($"{from}/{to}/"))
                 {
                     var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
                     var greetingBinary = await blobClient.DownloadContentAsync();
@@ -149,7 +149,7 @@ namespace GreetingService.Infrastructure.GreetingRepository
                     greetings.Add(greeting);
                 }
 
-                else if (from == null && to != null && blob.Name.StartsWith(prefix))
+                else if (from == null && to != null && blobNameParts[1].Equals(to))
                 {
                     var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
                     var greetingBinary = await blobClient.DownloadContentAsync();
@@ -157,7 +157,7 @@ namespace GreetingService.Infrastructure.GreetingRepository
                     greetings.Add(greeting);
                 }
 
-                else if (from != null && to == null && blobNameParts[1].Equals(to))
+                else if (from != null && to == null && blob.Name.StartsWith($"{from}"))
                 {
                     var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
                     var greetingBinary = await blobClient.DownloadContentAsync();
@@ -171,16 +171,9 @@ namespace GreetingService.Infrastructure.GreetingRepository
                     var greetingBinary = await blobClient.DownloadContentAsync();
                     var greeting = greetingBinary.Value.Content.ToObjectFromJson<Greeting>();
                     greetings.Add(greeting);
-                }
+                }           
             }
-
-            //{
-            //    var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
-            //    var blobContent = await blobClient.DownloadContentAsync();
-            //    var greeting = blobContent.Value.Content.ToObjectFromJson<Greeting>();
-            //    greetings.Add(greeting);
-            //}
-
+            
             return greetings;
         }
 
