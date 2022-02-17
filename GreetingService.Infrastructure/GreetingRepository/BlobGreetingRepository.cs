@@ -91,14 +91,14 @@ namespace GreetingService.Infrastructure.GreetingRepository
         private async Task DeleteAsync(Guid id, string containerName)
         {
             var blobContainerClient = new BlobContainerClient(_connectionString, containerName);
-            var blobs = _blobContainerClient.GetBlobsAsync();
+            var blobs = blobContainerClient.GetBlobsAsync();
 
             var blob = await blobs.FirstOrDefaultAsync(x => x.Name.EndsWith(id.ToString()));
 
             if (blob == null)
                 throw new Exception($"Greeting with ID: {id} does not exist.");
 
-            var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+            var blobClient = blobContainerClient.GetBlobClient(blob.Name);
             await blobClient.DeleteAsync();
         }
 
