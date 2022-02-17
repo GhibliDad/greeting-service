@@ -55,9 +55,14 @@ namespace GreetingService.Infrastructure.GreetingRepository
             _repository.Clear();
         }
 
-        public Task<IEnumerable<Greeting>> GetAsync(string from, string to)
+        public async Task<IEnumerable<Greeting>> GetAsync(string from, string to)
         {
-            throw new NotImplementedException();
+            var greetings = await GetAsync();
+
+            if (!string.IsNullOrWhiteSpace(from))
+                greetings = greetings.Where(x => x.From == from && x.To == to);
+
+            return greetings;
         }
     }
 }
