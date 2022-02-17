@@ -18,11 +18,12 @@ namespace GreetingService.Infrastructure.GreetingRepository
         private const string _blobContainerCsvName = "greetings-csv";
         private readonly BlobContainerClient _blobContainerClient;
         private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true, };
+        private readonly string _connectionString;
 
         public BlobGreetingRepository(IConfiguration configuration)
         {
-            var connectionString = configuration["LogStorageAccount"];
-            _blobContainerClient = new BlobContainerClient(connectionString, _blobContainerName);
+            _connectionString = configuration["LogStorageAccount"];
+            _blobContainerClient = new BlobContainerClient(_connectionString, _blobContainerName);
             _blobContainerClient.CreateIfNotExists();
         }
 
@@ -89,13 +90,16 @@ namespace GreetingService.Infrastructure.GreetingRepository
         }
         private async Task DeleteAsync(Guid id, string containerName)
         {
-            var blobClient = _blobContainerClient.GetBlobClient(id.ToString());
-            if (await blobClient.ExistsAsync())
-            {
-                await blobClient.DeleteAsync();
-            }
+            var blobContainerClient = new BlobContainerClient(_connectionString, containerName);
+            var blobs = _blobContainerClient.GetBlobsAsync();
 
-            throw new Exception($"Delete Failed. Greeting with ID: {id} not found.");
+            var blob = await blobs.FirstOrDefaultAsync(x => x.Name.EndsWith(id.ToString()));
+
+            if (blob == null)
+                throw new Exception($"Greeting with ID: {id} does not exist.");
+
+            var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+            await blobClient.DeleteAsync();
         }
 
         public async Task DeleteAllAsync()
@@ -106,7 +110,8 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
         private async Task DeleteAllAsync(string containerName)
         {
-            var blobs = _blobContainerClient.GetBlobsAsync();
+            var blobContainerClient = new BlobContainerClient(_connectionString, containerName);
+            var blobs = blobContainerClient.GetBlobsAsync();
             await foreach (var blob in blobs)
             {
                 var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
