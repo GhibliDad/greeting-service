@@ -119,9 +119,49 @@ namespace GreetingService.Infrastructure.GreetingRepository
             }
         }
 
-        public Task<IEnumerable<Greeting>> GetAsync(string from, string to)
+        public async Task<IEnumerable<Greeting>> GetAsync(string from, string to)
         {
-            throw new NotImplementedException();
+            var greetings = new List<Greeting>();
+            var selectGreetings =new List<Greeting>();
+
+            var blobs = _blobContainerClient.GetBlobsAsync();
+            await foreach (var blob in blobs)
+            {
+                if (from == null && to != null)
+                {
+                    var
+                    return greetings;
+                }
+
+                else if (from != null && to == null)
+                {
+                    return greetings;
+                }
+
+                else if (from != null && to != null)
+                {
+                    return greetings;
+                }
+
+                throw new ArgumentException("Error!");
+            }
+
+            //{
+            //    var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+            //    var blobContent = await blobClient.DownloadContentAsync();
+            //    var greeting = blobContent.Value.Content.ToObjectFromJson<Greeting>();
+            //    greetings.Add(greeting);
+            //}
+
+            return greetings;
+
+            //var selectedGreetings = new List<Greeting>();
+
+            //selectedGreetings =
+            //    from g in greetings
+            //    where g.From == from
+            //    select g;
+
         }
     }
 }
