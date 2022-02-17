@@ -50,7 +50,7 @@ namespace GreetingService.Infrastructure.GreetingRepository
             var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
             var blobContent = await blobClient.DownloadContentAsync();
             var greeting = blobContent.Value.Content.ToObjectFromJson<Greeting>();
-            
+
             return greeting;
         }
 
@@ -122,28 +122,56 @@ namespace GreetingService.Infrastructure.GreetingRepository
         public async Task<IEnumerable<Greeting>> GetAsync(string from, string to)
         {
             var greetings = new List<Greeting>();
-            var selectGreetings =new List<Greeting>();
 
-            var blobs = _blobContainerClient.GetBlobsAsync();
+            var prefix = "";
+            if (!string.IsNullOrWhiteSpace(from))
+            {
+                prefix = from;
+
+                if (!string.IsNullOrWhiteSpace(to))
+                {
+                    prefix = $"{from}/{to}";
+                }
+            }
+
+            var blobs = _blobContainerClient.GetBlobsAsync(prefix: prefix);
+
+            
             await foreach (var blob in blobs)
             {
-                if (from == null && to != null)
+                var blobNameParts = blob.Name.Split('/');
+             
+                if (from != null && to != null && blob.Name.StartsWith(prefix))
                 {
-                    var
-                    return greetings;
+                    var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+                    var greetingBinary = await blobClient.DownloadContentAsync();
+                    var greeting = greetingBinary.Value.Content.ToObjectFromJson<Greeting>();
+                    greetings.Add(greeting);
                 }
 
-                else if (from != null && to == null)
+                else if (from == null && to != null && blob.Name.StartsWith(prefix))
                 {
-                    return greetings;
+                    var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+                    var greetingBinary = await blobClient.DownloadContentAsync();
+                    var greeting = greetingBinary.Value.Content.ToObjectFromJson<Greeting>();
+                    greetings.Add(greeting);
                 }
 
-                else if (from != null && to != null)
+                else if (from != null && to == null && blobNameParts[1].Equals(to))
                 {
-                    return greetings;
+                    var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+                    var greetingBinary = await blobClient.DownloadContentAsync();
+                    var greeting = greetingBinary.Value.Content.ToObjectFromJson<Greeting>();
+                    greetings.Add(greeting);
                 }
 
-                throw new ArgumentException("Error!");
+                else if (from == null && to == null)
+                {
+                    var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+                    var greetingBinary = await blobClient.DownloadContentAsync();
+                    var greeting = greetingBinary.Value.Content.ToObjectFromJson<Greeting>();
+                    greetings.Add(greeting);
+                }
             }
 
             //{
@@ -154,14 +182,19 @@ namespace GreetingService.Infrastructure.GreetingRepository
             //}
 
             return greetings;
-
-            //var selectedGreetings = new List<Greeting>();
-
-            //selectedGreetings =
-            //    from g in greetings
-            //    where g.From == from
-            //    select g;
-
         }
+
+        //public async Task<IEnumerable<Greeting>> GetAsync(string from, string to)
+        //{
+        //    var greetings = new List<Greeting>();
+        //    var selectedGreetings = new List<Greeting>();
+        //
+        //    await blobs.FirstOrDefaultAsync(x => x.Name.StartsWith(id.ToString()));
+
+        //    selectedGreetings =
+        //        from g in greetings
+        //        where g.From == from
+        //        select g;
+        //}
     }
 }
