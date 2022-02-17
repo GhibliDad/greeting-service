@@ -15,6 +15,7 @@ namespace GreetingService.Infrastructure.GreetingRepository
     public class BlobGreetingRepository : IGreetingRepository
     {
         private const string _blobContainerName = "greetings";
+        private const string _blobContainerCsvName = "greetings-csv";
         private readonly BlobContainerClient _blobContainerClient;
         private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true, };
 
@@ -69,17 +70,25 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
         public async Task UpdateAsync(Greeting greeting)
         {
-            var blobClient = _blobContainerClient.GetBlobClient(greeting.Id.ToString());
-            await blobClient.DeleteIfExistsAsync();
-            var greetingBinary = new BinaryData(greeting, _jsonSerializerOptions);
-            await blobClient.UploadAsync(greetingBinary);
+            var oldGreeting = await GetAsync(greeting.Id);
+
+            var oldGreetingPath = $"{oldGreeting.From}/{oldGreeting.To}/{oldGreeting.Id}";
+            var oldGreetingBlobClient = _blobContainerClient.GetBlobClient(oldGreetingPath);
+            await oldGreetingBlobClient.DeleteAsync();
+
+            var newGreetingPath = $"{greeting.From}/{greeting.To}/{greeting.Id}";
+            var newGreetingBinary = new BinaryData(greeting, _jsonSerializerOptions);
+            var newGreetingBlobClient = _blobContainerClient.GetBlobClient(newGreetingPath);
+            await newGreetingBlobClient.UploadAsync(newGreetingBinary);
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            //var blobClient = _blobContainerClient.GetBlobClient(id.ToString());
-            //await blobClient.DeleteIfExistsAsync();
-
+            await DeleteAsync(id, _blobContainerName);
+            await DeleteAsync(id, _blobContainerCsvName);
+        }
+        private async Task DeleteAsync(Guid id, string containerName)
+        {
             var blobClient = _blobContainerClient.GetBlobClient(id.ToString());
             if (await blobClient.ExistsAsync())
             {
@@ -90,6 +99,12 @@ namespace GreetingService.Infrastructure.GreetingRepository
         }
 
         public async Task DeleteAllAsync()
+        {
+            await DeleteAllAsync(_blobContainerName);
+            await DeleteAllAsync(_blobContainerCsvName);
+        }
+
+        private async Task DeleteAllAsync(string containerName)
         {
             var blobs = _blobContainerClient.GetBlobsAsync();
             await foreach (var blob in blobs)
