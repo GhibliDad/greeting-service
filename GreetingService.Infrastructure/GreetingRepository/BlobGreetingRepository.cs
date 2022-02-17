@@ -118,5 +118,10 @@ namespace GreetingService.Infrastructure.GreetingRepository
                 await blobClient.DeleteAsync();
             }
         }
+
+        public Task<IEnumerable<Greeting>> GetAsync(string from, string to)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
