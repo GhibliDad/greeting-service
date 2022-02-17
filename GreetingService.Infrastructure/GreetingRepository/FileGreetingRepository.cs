@@ -92,5 +92,10 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
             File.WriteAllText(_filePath, JsonSerializer.Serialize(greetings, _jsonSerializerOptions));
         }
+
+        public Task<IEnumerable<Greeting>> GetAsync(string from, string to)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

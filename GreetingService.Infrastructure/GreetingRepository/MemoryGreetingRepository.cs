@@ -54,5 +54,10 @@ namespace GreetingService.Infrastructure.GreetingRepository
         {
             _repository.Clear();
         }
+
+        public async Task<IEnumerable<Greeting>> GetAsync(string from, string to)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

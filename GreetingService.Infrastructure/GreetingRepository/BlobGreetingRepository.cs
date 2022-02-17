@@ -50,7 +50,7 @@ namespace GreetingService.Infrastructure.GreetingRepository
             var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
             var blobContent = await blobClient.DownloadContentAsync();
             var greeting = blobContent.Value.Content.ToObjectFromJson<Greeting>();
-            
+
             return greeting;
         }
 
@@ -91,14 +91,14 @@ namespace GreetingService.Infrastructure.GreetingRepository
         private async Task DeleteAsync(Guid id, string containerName)
         {
             var blobContainerClient = new BlobContainerClient(_connectionString, containerName);
-            var blobs = _blobContainerClient.GetBlobsAsync();
+            var blobs = blobContainerClient.GetBlobsAsync();
 
             var blob = await blobs.FirstOrDefaultAsync(x => x.Name.EndsWith(id.ToString()));
 
             if (blob == null)
                 throw new Exception($"Greeting with ID: {id} does not exist.");
 
-            var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+            var blobClient = blobContainerClient.GetBlobClient(blob.Name);
             await blobClient.DeleteAsync();
         }
 
@@ -114,9 +114,80 @@ namespace GreetingService.Infrastructure.GreetingRepository
             var blobs = blobContainerClient.GetBlobsAsync();
             await foreach (var blob in blobs)
             {
-                var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+                var blobClient = blobContainerClient.GetBlobClient(blob.Name);
                 await blobClient.DeleteAsync();
             }
         }
+
+        public async Task<IEnumerable<Greeting>> GetAsync(string from, string to)
+        {
+            var greetings = new List<Greeting>();
+
+            var prefix = "";
+            if (!string.IsNullOrWhiteSpace(from))
+            {
+                prefix = from;
+
+                if (!string.IsNullOrWhiteSpace(to))
+                {
+                    prefix = $"{prefix}/{to}";
+                }
+            }
+
+            var blobs = _blobContainerClient.GetBlobsAsync(prefix: prefix);
+
+            
+            await foreach (var blob in blobs)
+            {
+                var blobNameParts = blob.Name.Split('/');
+             
+                if (from != null && to != null && blob.Name.StartsWith($"{from}/{to}/"))
+                {
+                    var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+                    var greetingBinary = await blobClient.DownloadContentAsync();
+                    var greeting = greetingBinary.Value.Content.ToObjectFromJson<Greeting>();
+                    greetings.Add(greeting);
+                }
+
+                else if (from == null && to != null && blobNameParts[1].Equals(to))
+                {
+                    var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+                    var greetingBinary = await blobClient.DownloadContentAsync();
+                    var greeting = greetingBinary.Value.Content.ToObjectFromJson<Greeting>();
+                    greetings.Add(greeting);
+                }
+
+                else if (from != null && to == null && blob.Name.StartsWith($"{from}"))
+                {
+                    var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+                    var greetingBinary = await blobClient.DownloadContentAsync();
+                    var greeting = greetingBinary.Value.Content.ToObjectFromJson<Greeting>();
+                    greetings.Add(greeting);
+                }
+
+                else if (from == null && to == null)
+                {
+                    var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
+                    var greetingBinary = await blobClient.DownloadContentAsync();
+                    var greeting = greetingBinary.Value.Content.ToObjectFromJson<Greeting>();
+                    greetings.Add(greeting);
+                }           
+            }
+            
+            return greetings;
+        }
+
+        //public async Task<IEnumerable<Greeting>> GetAsync(string from, string to)
+        //{
+        //    var greetings = new List<Greeting>();
+        //    var selectedGreetings = new List<Greeting>();
+        //
+        //    await blobs.FirstOrDefaultAsync(x => x.Name.StartsWith(id.ToString()));
+
+        //    selectedGreetings =
+        //        from g in greetings
+        //        where g.From == from
+        //        select g;
+        //}
     }
 }

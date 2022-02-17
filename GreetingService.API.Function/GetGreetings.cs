@@ -10,7 +10,6 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-//using Newtonsoft.Json;
 
 namespace GreetingService.API.Function
 {
@@ -39,7 +38,10 @@ namespace GreetingService.API.Function
             if (!_authHandler.IsAuthorized(req))
                 return new UnauthorizedResult();
 
-            var greetings = await _greetingRepository.GetAsync();
+            var from = req.Query["from"];
+            var to = req.Query["to"];
+
+            var greetings = await _greetingRepository.GetAsync(from, to);
 
             return new OkObjectResult(greetings);
         }
