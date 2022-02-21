@@ -12,12 +12,12 @@ namespace GreetingService.Infrastructure
     {
         public DbSet<Greeting> Greetings { get; set; }
 
-        public GreetingDbContext(DbContextOptions options) : base(options)
+        public GreetingDbContext()
         {
 
         }
 
-        public GreetingDbContext()
+        public GreetingDbContext(DbContextOptions options) : base(options)
         {
 
         }
