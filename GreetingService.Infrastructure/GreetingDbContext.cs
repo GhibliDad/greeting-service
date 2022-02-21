@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using GreetingService.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,23 @@ using System.Threading.Tasks;
 
 namespace GreetingService.Infrastructure
 {
-    internal class GreetingDbContext : DbContext
+    public class GreetingDbContext : DbContext
     {
+        public DbSet<Greeting> Greetings { get; set; }
+
+        public GreetingDbContext(DbContextOptions options) : base(options)
+        {
+
+        }
+
+        public GreetingDbContext()
+        {
+
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("GreetingDbConnectionString"));
+        }
     }
 }
