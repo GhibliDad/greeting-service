@@ -2,6 +2,7 @@
 
 param appName string
 param location string = resourceGroup().location
+param adminPassword string
 
 // storage accounts must be between 3 and 24 characters in length and use numbers and lower-case letters only
 var storageAccountName = '${substring(appName,0,10)}${uniqueString(resourceGroup().id)}' 
@@ -9,6 +10,9 @@ var logStorageAccountName = '${substring(appName,0,7)}log${uniqueString(resource
 var hostingPlanName = '${appName}${uniqueString(resourceGroup().id)}'
 var appInsightsName = '${appName}${uniqueString(resourceGroup().id)}'
 var functionAppName = '${appName}'
+var sqlServerName = '${appName}sqlserver${uniqueString(resourceGroup().id)}'
+var sqlDatabaseName = '${appName}sqlDatabase${uniqueString(resourceGroup().id)}'
+var sqlFirewallName = '${appName}sqlFirewall${uniqueString(resourceGroup().id)}'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   name: storageAccountName
@@ -25,6 +29,43 @@ resource logStorageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   kind: 'StorageV2'
   sku: {
     name: 'Standard_LRS'
+  }
+}
+
+resource sqlServer 'Microsoft.Sql/servers@2019-06-01-preview' = {
+  name: sqlServerName
+  location: location
+  kind: 'v12.0'
+  properties: {
+    administratorLogin: 'towa.shimizu'
+    administratorLoginPassword: adminPassword
+    version: '12.0'
+    minimalTlsVersion: '1.2'
+    publicNetworkAccess: 'Enabled'
+  }
+  sku: {
+    name: 'Basic'
+    tier: 'Basic'
+    capacity: 5
+  }
+}
+
+resource sqlDatabase 'Microsoft.Sql/servers/databases@2019-06-01-preview' = {
+  name: sqlDatabaseName
+  location: location
+  sku: {
+    name: 'Basic'
+  }
+  properties: {
+
+  }
+}
+
+resource sqlFirewall 'Microsoft.Sql/servers/firewallRules@2021-08-01-preview' = {
+  name: sqlFirewallName
+  properties: {
+    endIpAddress: '0.0.0.0'
+    startIpAddress: '0.0.0.0'
   }
 }
 
