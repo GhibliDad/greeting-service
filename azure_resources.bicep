@@ -28,6 +28,15 @@ resource logStorageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   }
 }
 
+resource sqlStorageAccount 'Microsoft.Sql/servers@2019-06-01-preview' = {
+  name: sqlStorageAccountName
+  location: location
+  kind: 'StorageV2'
+  sku: {
+    name: 'Basic'
+  }
+}
+
 resource appInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
   name: appInsightsName
   location: location
