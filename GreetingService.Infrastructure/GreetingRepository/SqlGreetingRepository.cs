@@ -96,6 +96,5 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
             await _greetingDbContext.SaveChangesAsync();
         }
-
     }
 }
