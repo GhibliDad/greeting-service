@@ -9,6 +9,7 @@ var logStorageAccountName = '${substring(appName,0,7)}log${uniqueString(resource
 var hostingPlanName = '${appName}${uniqueString(resourceGroup().id)}'
 var appInsightsName = '${appName}${uniqueString(resourceGroup().id)}'
 var functionAppName = '${appName}'
+var sqlServerName = '${appName}sql${uniqueString(resourceGroup().id)}'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   name: storageAccountName
@@ -28,13 +29,30 @@ resource logStorageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   }
 }
 
-resource sqlStorageAccount 'Microsoft.Sql/servers@2019-06-01-preview' = {
-  name: sqlStorageAccountName
+resource sqlStorageServer 'Microsoft.Sql/servers@2019-06-01-preview' = {
+  name: sqlServerName
   location: location
-  kind: 'StorageV2'
+  kind: 'v12.0'
+  properties: {
+    administratorLogin: 'towa.shimizu'
+    version: '12.0'
+    minimalTlsVersion: '1.2'
+    publicNetworkAccess: 'Enabled'
+    restrictOutboundNetworkAccess: 'Disabled'
+  }
   sku: {
     name: 'Basic'
+    tier: 'Basic'
+    capacity: 5
   }
+}
+
+resource sqlStorageDb '' = {
+
+}
+
+resource sqlStorageFirewall '' = {
+  
 }
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
