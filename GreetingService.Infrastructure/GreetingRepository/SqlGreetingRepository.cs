@@ -37,20 +37,15 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
         public async Task UpdateAsync(Greeting greeting)
         {
-            greeting.Posts.Add(
-                new Post { Title = "Hello World", Content = "I wrote an app using EF Core!" });
-            db.SaveChanges(); ;
+            var oldGreeting = await _greetingDbContext.Greetings.FirstOrDefaultAsync(x => x.Id == greeting.Id);
+            if (oldGreeting == null)
+                throw new Exception("Greeting not found");
 
-            var oldGreeting = await GetAsync(greeting.Id);
+            oldGreeting.Message = greeting.Message;
+            oldGreeting.To = greeting.To;
+            oldGreeting.From = greeting.From;
 
-            var oldGreetingPath = $"{oldGreeting.From}/{oldGreeting.To}/{oldGreeting.Id}";
-            var oldGreetingBlobClient = _blobContainerClient.GetBlobClient(oldGreetingPath);
-            await oldGreetingBlobClient.DeleteAsync();
-
-            var newGreetingPath = $"{greeting.From}/{greeting.To}/{greeting.Id}";
-            var newGreetingBinary = new BinaryData(greeting, _jsonSerializerOptions);
-            var newGreetingBlobClient = _blobContainerClient.GetBlobClient(newGreetingPath);
-            await newGreetingBlobClient.UploadAsync(newGreetingBinary);
+            await _greetingDbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAllAsync()
