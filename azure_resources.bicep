@@ -9,7 +9,8 @@ var logStorageAccountName = '${substring(appName,0,7)}log${uniqueString(resource
 var hostingPlanName = '${appName}${uniqueString(resourceGroup().id)}'
 var appInsightsName = '${appName}${uniqueString(resourceGroup().id)}'
 var functionAppName = '${appName}'
-var sqlServerName = '${appName}sql${uniqueString(resourceGroup().id)}'
+var sqlServerName = '${appName}sqlserver${uniqueString(resourceGroup().id)}'
+var sqlDatabaseName = '${appName}sqlDatabase${uniqueString(resourceGroup().id)}'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   name: storageAccountName
@@ -29,7 +30,7 @@ resource logStorageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   }
 }
 
-resource sqlStorageServer 'Microsoft.Sql/servers@2019-06-01-preview' = {
+resource sqlServer 'Microsoft.Sql/servers@2019-06-01-preview' = {
   name: sqlServerName
   location: location
   kind: 'v12.0'
@@ -47,12 +48,19 @@ resource sqlStorageServer 'Microsoft.Sql/servers@2019-06-01-preview' = {
   }
 }
 
-resource sqlStorageDb '' = {
+resource sqlDatabase 'Microsoft.Sql/databases@2019-06-01-preview' = {
+  name: sqlDatabaseName
+  location: location
+  sku: {
+    name: 'Basic'
+  }
+  properties: {
 
+  }
 }
 
 resource sqlStorageFirewall '' = {
-  
+
 }
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
