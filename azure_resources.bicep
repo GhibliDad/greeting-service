@@ -2,7 +2,8 @@
 
 param appName string
 param location string = resourceGroup().location
-param adminPassword string
+param sqlAdminUser string = 'towa.shimizu'
+param sqlAdminPassword string
 
 // storage accounts must be between 3 and 24 characters in length and use numbers and lower-case letters only
 var storageAccountName = '${substring(appName,0,10)}${uniqueString(resourceGroup().id)}' 
@@ -11,7 +12,7 @@ var hostingPlanName = '${appName}${uniqueString(resourceGroup().id)}'
 var appInsightsName = '${appName}${uniqueString(resourceGroup().id)}'
 var functionAppName = '${appName}'
 var sqlServerName = '${appName}sqlserver${uniqueString(resourceGroup().id)}'
-var sqlDatabaseName = '${appName}sqlDatabase${uniqueString(resourceGroup().id)}'
+var sqlDbName = '${appName}sqlDatabase${uniqueString(resourceGroup().id)}'
 var sqlFirewallName = '${appName}sqlFirewall${uniqueString(resourceGroup().id)}'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = {
@@ -38,7 +39,7 @@ resource sqlServer 'Microsoft.Sql/servers@2019-06-01-preview' = {
   kind: 'v12.0'
   properties: {
     administratorLogin: 'towa.shimizu'
-    administratorLoginPassword: adminPassword
+    administratorLoginPassword: sqlAdminPassword
     version: '12.0'
     minimalTlsVersion: '1.2'
     publicNetworkAccess: 'Enabled'
@@ -51,7 +52,7 @@ resource sqlServer 'Microsoft.Sql/servers@2019-06-01-preview' = {
 }
 
 resource sqlDatabase 'Microsoft.Sql/servers/databases@2019-06-01-preview' = {
-  name: sqlDatabaseName
+  name: sqlDbName
   location: location
   sku: {
     name: 'Basic'
@@ -129,6 +130,10 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
         {
           name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
           value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageAccount.id, storageAccount.apiVersion).keys[0].value}'
+        }
+        {
+          name: 'DbConnectionString'
+          value: 'Data Source=tcp:${reference(sqlServer.id).fullyQualifiedDomainName},1433;Initial Catalog=${sqlDbName};User Id=${sqlAdminUser};Password=\'${sqlAdminPassword}\';'
         }
         // WEBSITE_CONTENTSHARE will also be auto-generated - https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings#website_contentshare
         // WEBSITE_RUN_FROM_PACKAGE will be set to 1 by func azure functionapp publish
