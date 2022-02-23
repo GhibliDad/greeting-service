@@ -36,7 +36,6 @@ resource logStorageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = {
 resource sqlServer 'Microsoft.Sql/servers@2019-06-01-preview' = {
   name: sqlServerName
   location: location
-  kind: 'v12.0'
   properties: {
     administratorLogin: 'towa.shimizu'
     administratorLoginPassword: sqlAdminPassword
@@ -44,29 +43,22 @@ resource sqlServer 'Microsoft.Sql/servers@2019-06-01-preview' = {
     minimalTlsVersion: '1.2'
     publicNetworkAccess: 'Enabled'
   }
-  sku: {
-    name: 'Basic'
-    tier: 'Basic'
-    capacity: 5
+  resource sqlDatabase 'databases@2019-06-01-preview' = {
+    name: sqlDbName
+    location: location
+    sku: {
+      name: 'Basic'
+      tier: 'Basic'
+      capacity: 5
+    }
+    properties: {}
   }
-}
-
-resource sqlDatabase 'Microsoft.Sql/servers/databases@2019-06-01-preview' = {
-  name: sqlDbName
-  location: location
-  sku: {
-    name: 'Basic'
-  }
-  properties: {
-
-  }
-}
-
-resource sqlFirewall 'Microsoft.Sql/servers/firewallRules@2021-08-01-preview' = {
-  name: sqlFirewallName
-  properties: {
-    endIpAddress: '0.0.0.0'
-    startIpAddress: '0.0.0.0'
+  resource sqlFirewall 'firewallRules@2021-08-01-preview' = {
+    name: sqlFirewallName
+    properties: {
+      endIpAddress: '0.0.0.0'
+      startIpAddress: '0.0.0.0'
+    }
   }
 }
 
