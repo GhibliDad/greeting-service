@@ -114,6 +114,6 @@ jobs:
             az group create -l westeurope -n towa-rg-dev
             az deployment group create --resource-group towa-rg-dev --template-file ./azure_resources.bicep --parameters appName=towafunctionapp adminPassword=${{ secrets.DB_ADMIN_CREDENTIALS }}
 
-      - name: Sleep for 40 seconds
+      - name: Sleep for 60 seconds
         run: sleep 60s
         shell: bash
