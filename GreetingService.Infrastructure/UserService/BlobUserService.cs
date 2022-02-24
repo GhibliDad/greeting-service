@@ -1,5 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using GreetingService.Core;
+using GreetingService.Core.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -24,6 +25,31 @@ namespace GreetingService.Infrastructure.UserService
             _blobContainerClient = new BlobContainerClient(connectionString, _blobContainerName);
             _blobContainerClient.CreateIfNotExists();
             _logger = logger;
+        }
+
+        public Task CreateAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<User> GetAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<User>> GetAsync()
+        {
+            throw new NotImplementedException();
         }
 
         public bool IsValidUser(string username, string password)
@@ -53,6 +79,11 @@ namespace GreetingService.Infrastructure.UserService
             }
 
             return false;
+        }
+
+        public Task UpdateAsync(User user)
+        {
+            throw new NotImplementedException();
         }
     }
 }

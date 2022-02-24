@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GreetingService.Core;
+using GreetingService.Core.Entities;
 
 namespace GreetingService.Infrastructure.UserService
 {
@@ -14,6 +15,31 @@ namespace GreetingService.Infrastructure.UserService
             { "towa","mrblobby" },
             { "sofia","lakrits" },
         };
+
+        public Task CreateAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<User> GetAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<User>> GetAsync()
+        {
+            throw new NotImplementedException();
+        }
 
         public bool IsValidUser(string username, string password)
         {
@@ -31,6 +57,11 @@ namespace GreetingService.Infrastructure.UserService
                 return false;
 
             return true;
+        }
+
+        public Task UpdateAsync(User user)
+        {
+            throw new NotImplementedException();
         }
     }
 }
