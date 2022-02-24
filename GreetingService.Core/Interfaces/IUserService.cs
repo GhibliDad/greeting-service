@@ -11,11 +11,11 @@ namespace GreetingService.Core
     {
         public Task<bool> IsValidUserAsync(string username, string password);
         public bool IsValidUser(string username, string password);
-        public Task<User> GetAsync(Guid id);
+        public Task<User> GetAsync(string email);
         public Task<IEnumerable<User>> GetAsync();
         public Task CreateAsync(User user);
         public Task UpdateAsync(User user);
-        public Task DeleteAsync(Guid id);
+        public Task DeleteAsync(string email);
         public Task DeleteAllAsync();
     }
 }
