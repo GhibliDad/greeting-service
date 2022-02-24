@@ -8,26 +8,30 @@ using System.Threading.Tasks;
 
 namespace GreetingService.Infrastructure.UserService
 {
+
     public class SqlUserService : IUserService
     {
-        public bool IsValidUser(string username, string password)
+        private readonly GreetingDbContext _greetingDbContext;
+
+        public SqlUserService(GreetingDbContext greetingDbContext)
         {
-            throw new NotImplementedException();
+            _greetingDbContext = greetingDbContext;
+        }
+        public async Task CreateAsync(User user)
+        {
+            await _greetingDbContext.Users.AddAsync(user);
+            await _greetingDbContext.SaveChangesAsync();
         }
 
-        public async Task<bool> IsValidUserAsync(string username, string password)
+        public async Task DeleteAllAsync()
         {
-            throw new NotImplementedException();
-        }
+            var users = await _greetingDbContext.Users.ToListAsync();
+            if (!users.Any())
+                throw new Exception("No Users to delete");
 
-        public Task CreateAsync(User user)
-        {
-            throw new NotImplementedException();
-        }
+            users.Clear();
 
-        public Task DeleteAllAsync()
-        {
-            throw new NotImplementedException();
+            await _greetingDbContext.SaveChangesAsync();
         }
 
         public Task DeleteAsync(Guid id)
@@ -41,6 +45,16 @@ namespace GreetingService.Infrastructure.UserService
         }
 
         public Task<IEnumerable<User>> GetAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsValidUser(string username, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> IsValidUserAsync(string username, string password)
         {
             throw new NotImplementedException();
         }
