@@ -26,17 +26,17 @@ namespace GreetingService.Infrastructure.UserService
             throw new NotImplementedException();
         }
 
-        public Task DeleteAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<User> GetAsync(Guid id)
+        public Task DeleteAsync(string email)
         {
             throw new NotImplementedException();
         }
 
         public Task<IEnumerable<User>> GetAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<User> GetAsync(string email)
         {
             throw new NotImplementedException();
         }
