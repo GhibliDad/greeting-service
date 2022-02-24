@@ -1,4 +1,5 @@
 ﻿using GreetingService.Core;
+using GreetingService.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,36 @@ namespace GreetingService.Infrastructure.UserService
         }
 
         public async Task<bool> IsValidUserAsync(string username, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task CreateAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<User> GetAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<User>> GetAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(User user)
         {
             throw new NotImplementedException();
         }
