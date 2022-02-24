@@ -27,6 +27,9 @@ namespace GreetingService.Infrastructure.GreetingRepository
         {
             var greeting = await _greetingDbContext.Greetings.FirstOrDefaultAsync(x => x.Id == id);
 
+            if (greeting == null)
+                throw new Exception("Greeting not found");
+
             return greeting;
         }
 
