@@ -14,7 +14,13 @@ namespace GreetingService.Infrastructure.UserService
             { "towa","mrblobby" },
             { "sofia","lakrits" },
         };
+
         public bool IsValidUser(string username, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> IsValidUserAsync(string username, string password)
         {
             if (username == null || password == null) { return false; }
 

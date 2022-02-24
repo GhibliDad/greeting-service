@@ -22,6 +22,11 @@ namespace GreetingService.Infrastructure.UserService
 
         public bool IsValidUser(string username, string password)
         {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> IsValidUserAsync(string username, string password)
+        {
             var storedPassword = _configuration[username];
 
             if (storedPassword != null && storedPassword == password)

@@ -28,6 +28,11 @@ namespace GreetingService.Infrastructure.UserService
 
         public bool IsValidUser(string username, string password)
         {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> IsValidUserAsync(string username, string password)
+        {
             var blobClient = _blobContainerClient.GetBlobClient(_blobName);
             if (!blobClient.Exists())
                 return false;
