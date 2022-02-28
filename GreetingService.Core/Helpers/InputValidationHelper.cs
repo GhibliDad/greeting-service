@@ -1,7 +1,9 @@
-﻿using System;
+﻿using GreetingService.Core.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace GreetingService.Core.Helpers
@@ -15,11 +17,13 @@ namespace GreetingService.Core.Helpers
 
             try
             {
-
+                return Regex.IsMatch(email,
+                   @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+                   RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
             }
             catch 
             {
-
+                throw new Exception();
             }
         }
     }
