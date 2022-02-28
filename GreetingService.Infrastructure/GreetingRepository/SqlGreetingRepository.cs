@@ -91,7 +91,6 @@ namespace GreetingService.Infrastructure.GreetingRepository
                 throw new Exception("Greeting does not exist");
 
             _greetingDbContext.Greetings.Remove(greeting);
-
             await _greetingDbContext.SaveChangesAsync();
         }
     }

@@ -26,24 +26,19 @@ namespace GreetingService.Infrastructure.UserService
 
         public async Task DeleteAllAsync()
         {
-            var users = await _greetingDbContext.Users.ToListAsync();
-            if (!users.Any())
-                throw new Exception("No Users to delete");
-
-            users.Clear();
+            _greetingDbContext.Users.RemoveRange(_greetingDbContext.Users);
 
             await _greetingDbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(string email)
         {
-            var users = await _greetingDbContext.Users.ToListAsync();
             var user = await _greetingDbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
 
             if (user == null)
                 throw new Exception("User does not exist");
 
-            users.Remove(user);
+            _greetingDbContext.Users.Remove(user);
             await _greetingDbContext.SaveChangesAsync();
         }
 
