@@ -2,6 +2,7 @@ using System.IO;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
+using GreetingService.API.Function.Authentication;
 using GreetingService.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,10 +19,13 @@ namespace GreetingService.API.Function
     {
         private readonly ILogger<PutUser> _logger;
         private readonly IUserService _userService;
+        private readonly IAuthHandler _authHandler;
 
-        public PutUser(ILogger<PutUser> log)
+        public PutUser(ILogger<PutUser> log, IUserService userService, IAuthHandler authHandler)
         {
             _logger = log;
+            _userService = userService;
+            _authHandler = authHandler;
         }
 
         [FunctionName("PutUser")]
