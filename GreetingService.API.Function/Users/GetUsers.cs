@@ -1,6 +1,5 @@
 using System.IO;
 using System.Net;
-using System.Text.Json;
 using System.Threading.Tasks;
 using GreetingService.API.Function.Authentication;
 using GreetingService.Core;
@@ -11,45 +10,42 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-//using Newtonsoft.Json;
+using Newtonsoft.Json;
 
-namespace GreetingService.API.Function.User
+namespace GreetingService.API.Function.Users
 {
-    public class PutUser
+    public class GetUsers
     {
-        private readonly ILogger<PutUser> _logger;
+        private readonly ILogger<GetUsers> _logger;
         private readonly IUserService _userService;
         private readonly IAuthHandler _authHandler;
 
-        public PutUser(ILogger<PutUser> log, IUserService userService, IAuthHandler authHandler)
+        public GetUsers(ILogger<GetUsers> log, IUserService userService, IAuthHandler authHandler)
         {
             _logger = log;
             _userService = userService;
             _authHandler = authHandler;
         }
 
-        [FunctionName("PutUser")]
+        [FunctionName("GetUsers")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "name" })]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(string), Description = "The OK response")]
+        [OpenApiParameter(name: "name", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **Name** parameter")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Description = "Not found")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "user")] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            var body = await req.ReadAsStringAsync();
-            var user = JsonSerializer.Deserialize<User>(body);
+            if (!await _authHandler.IsAuthorizedAsync(req))
+                return new UnauthorizedResult();
 
-            try
-            {
-                await _userService.UpdateAsync(user);
-            }
-            catch
-            {
-                return new NotFoundResult();
-            }
+            //var from = req.Query["from"];
+            //var to = req.Query["to"];
 
-            return new AcceptedResult();
+            var users = await _userService.GetUsersAsync();
+
+            return new OkObjectResult(users);
         }
     }
 }

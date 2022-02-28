@@ -10,18 +10,18 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 
-namespace GreetingService.API.Function.User
+namespace GreetingService.API.Function.Users
 {
-    public class DeleteGreetings
+    public class DeleteUser
     {
-        private readonly ILogger<DeleteGreetings> _logger;
+        private readonly ILogger<DeleteUser> _logger;
 
-        public DeleteGreetings(ILogger<DeleteGreetings> log)
+        public DeleteUser(ILogger<DeleteUser> log)
         {
             _logger = log;
         }
 
-        [FunctionName("DeleteGreetings")]
+        [FunctionName("DeleteUser")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "name" })]
         [OpenApiParameter(name: "name", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **Name** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]

@@ -18,20 +18,20 @@ namespace GreetingService.Infrastructure.UserService
         {
             _greetingDbContext = greetingDbContext;
         }
-        public async Task CreateAsync(User user)
+        public async Task CreateUserAsync(User user)
         {
             await _greetingDbContext.Users.AddAsync(user);
             await _greetingDbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteAllAsync()
+        public async Task DeleteAllUsersAsync()
         {
             _greetingDbContext.Users.RemoveRange(_greetingDbContext.Users);
 
             await _greetingDbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(string email)
+        public async Task DeleteUserAsync(string email)
         {
             var user = await _greetingDbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
 
@@ -42,7 +42,7 @@ namespace GreetingService.Infrastructure.UserService
             await _greetingDbContext.SaveChangesAsync();
         }
 
-        public async Task<User> GetAsync(string email)
+        public async Task<User> GetUserAsync(string email)
         {
             var user = await _greetingDbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
 
@@ -52,7 +52,7 @@ namespace GreetingService.Infrastructure.UserService
             return user;
         }
 
-        public async Task<IEnumerable<User>> GetAsync()
+        public async Task<IEnumerable<User>> GetUsersAsync()
         {
             return await _greetingDbContext.Users.ToListAsync();
         }
@@ -75,7 +75,7 @@ namespace GreetingService.Infrastructure.UserService
             return false;
         }
 
-        public async Task UpdateAsync(User user)
+        public async Task UpdateUserAsync(User user)
         {
             var existingUser = _greetingDbContext.Users.FirstOrDefault(x => x.Email.Equals(user.Email));
             if (existingUser == null)
