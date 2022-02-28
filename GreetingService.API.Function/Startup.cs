@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
 using Serilog;
+using Serilog.Sinks.AzureBlobStorage;
 using System.Reflection;
 
 [assembly: FunctionsStartup(typeof(GreetingService.API.Function.Startup))]
@@ -48,7 +49,8 @@ namespace GreetingService.API.Function
             builder.Services.AddScoped<IGreetingRepository, SqlGreetingRepository>();
 
             //builder.Services.AddScoped<IUserService, AppSettingsUserService>();
-            builder.Services.AddScoped<IUserService, BlobUserService>();
+            //builder.Services.AddScoped<IUserService, BlobUserService>();
+            builder.Services.AddScoped<IUserService, SqlUserService>();
 
             builder.Services.AddScoped<IAuthHandler, BasicAuthHandler>();
 
