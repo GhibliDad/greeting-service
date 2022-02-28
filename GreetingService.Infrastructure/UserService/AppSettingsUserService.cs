@@ -21,37 +21,27 @@ namespace GreetingService.Infrastructure.UserService
             _logger = logger;
         }
 
-        public Task CreateAsync(User user)
+        public Task CreateUserAsync(User user)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteAllAsync()
+        public Task DeleteAllUsersAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteAsync(Guid id)
+        public Task DeleteUserAsync(string email)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteAsync(string email)
+        public Task<User> GetUserAsync(string email)
         {
             throw new NotImplementedException();
         }
 
-        public Task<User> GetAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<User>> GetAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<User> GetAsync(string email)
+        public Task<IEnumerable<User>> GetUsersAsync()
         {
             throw new NotImplementedException();
         }
@@ -74,7 +64,7 @@ namespace GreetingService.Infrastructure.UserService
             return false;
         }
 
-        public Task UpdateAsync(User user)
+        public Task UpdateUserAsync(User user)
         {
             throw new NotImplementedException();
         }

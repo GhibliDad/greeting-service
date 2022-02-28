@@ -78,25 +78,19 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
         public async Task DeleteAllAsync()
         {
-            var greetings = await _greetingDbContext.Greetings.ToListAsync();
-            if (!greetings.Any())
-                throw new Exception("No Greetings to delete");
-
-            greetings.Clear();
+            _greetingDbContext.Greetings.RemoveRange(_greetingDbContext.Greetings);
 
             await _greetingDbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var greetings = await _greetingDbContext.Greetings.ToListAsync();
             var greeting = await _greetingDbContext.Greetings.FirstOrDefaultAsync(x => x.Id == id);
 
             if (greeting == null)
                 throw new Exception("Greeting does not exist");
 
-            greetings.Remove(greeting);
-
+            _greetingDbContext.Greetings.Remove(greeting);
             await _greetingDbContext.SaveChangesAsync();
         }
     }

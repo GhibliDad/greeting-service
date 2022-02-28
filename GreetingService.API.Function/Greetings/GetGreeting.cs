@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 //using Newtonsoft.Json;
 
-namespace GreetingService.API.Function
+namespace GreetingService.API.Function.Greetings
 {
     public class GetGreeting
     {
