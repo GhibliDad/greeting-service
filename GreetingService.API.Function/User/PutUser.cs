@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 //using Newtonsoft.Json;
 
-namespace GreetingService.API.Function
+namespace GreetingService.API.Function.User
 {
     public class PutUser
     {
@@ -38,11 +38,11 @@ namespace GreetingService.API.Function
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
             var body = await req.ReadAsStringAsync();
-            var greeting = JsonSerializer.Deserialize<User>(body);
+            var user = JsonSerializer.Deserialize<User>(body);
 
             try
             {
-                await _userService.UpdateAsync(greeting);
+                await _userService.UpdateAsync(user);
             }
             catch
             {

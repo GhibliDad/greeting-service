@@ -1,6 +1,8 @@
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using GreetingService.API.Function.Authentication;
+using GreetingService.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -15,32 +17,35 @@ namespace GreetingService.API.Function.User
     public class GetUsers
     {
         private readonly ILogger<GetUsers> _logger;
+        private readonly IUserService _userService;
+        private readonly IAuthHandler _authHandler;
 
-        public GetUsers(ILogger<GetUsers> log)
+        public GetUsers(ILogger<GetUsers> log, IUserService userService, IAuthHandler authHandler)
         {
             _logger = log;
+            _userService = userService;
+            _authHandler = authHandler;
         }
 
         [FunctionName("GetUsers")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "name" })]
         [OpenApiParameter(name: "name", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **Name** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Description = "Not found")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "user")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+            if (!await _authHandler.IsAuthorizedAsync(req))
+                return new UnauthorizedResult();
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            //var from = req.Query["from"];
+            //var to = req.Query["to"];
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+            var users = await _userService.GetAsync();
 
-            return new OkObjectResult(responseMessage);
+            return new OkObjectResult(users);
         }
     }
 }

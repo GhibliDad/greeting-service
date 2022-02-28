@@ -1,5 +1,6 @@
 using System.IO;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 using GreetingService.API.Function.Authentication;
 using GreetingService.Core;
@@ -10,7 +11,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 
 namespace GreetingService.API.Function.User
 {
@@ -32,21 +33,26 @@ namespace GreetingService.API.Function.User
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Description = "Not found")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "Post", Route = "user")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+            if (!await _authHandler.IsAuthorizedAsync(req))
+                return new UnauthorizedResult();
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            var body = await req.ReadAsStringAsync();
+            var user = JsonSerializer.Deserialize<User>(body);
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+            try
+            {
+                await _userService.CreateAsync(user);
+            }
+            catch
+            {
+                return new ConflictResult();
+            }
 
-            return new OkObjectResult(responseMessage);
+            return new AcceptedResult();
         }
     }
 }
