@@ -10,7 +10,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 
 namespace GreetingService.API.Function.User
 {
