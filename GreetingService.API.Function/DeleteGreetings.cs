@@ -27,7 +27,7 @@ namespace GreetingService.API.Function
             _authHandler = authHandler;
         }
 
-        [FunctionName("DeletGreetings")]
+        [FunctionName("DeleteGreetings")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Greetings" })]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.Accepted, Description = "Accepted")]
         public async Task<IActionResult> Run(
