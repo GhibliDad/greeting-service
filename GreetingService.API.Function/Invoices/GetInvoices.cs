@@ -1,6 +1,8 @@
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using GreetingService.API.Function.Authentication;
+using GreetingService.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -15,10 +17,14 @@ namespace GreetingService.API.Function.Invoices
     public class GetInvoices
     {
         private readonly ILogger<GetInvoices> _logger;
+        private readonly IInvoiceService _invoiceService;
+        private readonly IAuthHandler _authHandler;
 
-        public GetInvoices(ILogger<GetInvoices> log)
+        public GetInvoices(ILogger<GetInvoices> log, IInvoiceService invoiceService, IAuthHandler authHandler)
         {
             _logger = log;
+            _invoiceService = invoiceService;
+            _authHandler = authHandler;
         }
 
         [FunctionName("GetInvoices")]
