@@ -53,5 +53,3 @@ namespace GreetingService.Infrastructure.UserService
         }
     }
 }
-
-//sdjlnbfjksdfjkdbhkjf
