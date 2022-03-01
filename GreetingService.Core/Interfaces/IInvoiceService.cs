@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GreetingService.Core.Interfaces
 {
-    internal interface IInvoiceService
+    public interface IInvoiceService
     {
         public Task<IEnumerable<Invoice>> GetInvoices(int year, int month);
         public Task<Invoice> GetInvoice(int year, int month, string email);

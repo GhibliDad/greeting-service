@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GreetingService.Core.Entities
 {
-    internal class Invoice
+    public class Invoice
     {
         public int Id { get; set; }
         public string User { get; set; }
