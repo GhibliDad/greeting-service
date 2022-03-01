@@ -17,17 +17,17 @@ namespace GreetingService.Infrastructure.UserService
             _greetingDbContext = greetingDbContext;
         }
 
-        public Task CreateOrUpdateInvoice(Invoice invoice)
+        public async Task CreateOrUpdateInvoiceAsync(Invoice invoice)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Invoice> GetInvoice(int year, int month, string email)
+        public async Task<Invoice> GetInvoiceAsync(int year, int month, string email)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Invoice>> GetInvoices(int year, int month)
+        public async Task<IEnumerable<Invoice>> GetInvoicesAsync(int year, int month)
         {
             throw new NotImplementedException();
         }
