@@ -8,13 +8,27 @@ namespace GreetingService.Core.Entities
 {
     public class Invoice
     {
-        public int Id { get; set; }
-        public string User { get; set; }
-        public List<Greeting> Greetings { get; set;}
+        public int? Id { get; set; }
+        public User Sender { get; set; }
+        public IEnumerable<Greeting> Greetings { get; set;}
         public int Year { get; set; }
         public int Month { get; set; }
-        public int CostPerGreeting { get; set; } = 20;
-        public int TotalCost { get; set; }
+        public decimal CostPerGreeting { get; set; } = 20;
+        
+        private decimal _totalCost;
+        public decimal TotalCost {
+            get
+            {
+                if (Greetings == null)
+                    return 0;
+                
+                return Greetings.Count() * CostPerGreeting;
+            }
+            set
+            {
+                _totalCost = value;
+            } 
+        }
         public string Currency { get; set; } = "SEK";
     }
 }
