@@ -4,6 +4,7 @@ using GreetingService.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GreetingService.Infrastructure.Migrations
 {
     [DbContext(typeof(GreetingDbContext))]
-    partial class GreetingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220301151402_CreatedInvoiceTablez")]
+    partial class CreatedInvoiceTablez
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,9 +34,6 @@ namespace GreetingService.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("InvoiceId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -50,46 +49,9 @@ namespace GreetingService.Infrastructure.Migrations
 
                     b.HasIndex("From");
 
-                    b.HasIndex("InvoiceId");
-
                     b.HasIndex("To");
 
                     b.ToTable("Greetings");
-                });
-
-            modelBuilder.Entity("GreetingService.Core.Entities.Invoice", b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"), 1L, 1);
-
-                    b.Property<decimal>("CostPerGreeting")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Currency")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Month")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SenderEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal>("TotalCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SenderEmail");
-
-                    b.ToTable("Invoices");
                 });
 
             modelBuilder.Entity("GreetingService.Core.Entities.User", b =>
@@ -128,31 +90,11 @@ namespace GreetingService.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("GreetingService.Core.Entities.Invoice", null)
-                        .WithMany("Greetings")
-                        .HasForeignKey("InvoiceId");
-
                     b.HasOne("GreetingService.Core.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("To")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("GreetingService.Core.Entities.Invoice", b =>
-                {
-                    b.HasOne("GreetingService.Core.Entities.User", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderEmail")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Sender");
-                });
-
-            modelBuilder.Entity("GreetingService.Core.Entities.Invoice", b =>
-                {
-                    b.Navigation("Greetings");
                 });
 #pragma warning restore 612, 618
         }

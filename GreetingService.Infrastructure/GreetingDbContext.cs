@@ -14,6 +14,8 @@ namespace GreetingService.Infrastructure
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Invoice> Invoices { get; set; }
+
         public GreetingDbContext()
         {
 
@@ -55,6 +57,11 @@ namespace GreetingService.Infrastructure
                 .HasForeignKey(x => x.To)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.ClientCascade);
+
+            //Tell EF Core that Invoice.Id should be a number that is automatically incremented on save, i.e. 1, 2, 3, 4, 5 etc
+            modelBuilder.Entity<Invoice>()
+                .Property(x => x.Id)
+                .ValueGeneratedOnAdd();
         }
     }
 }

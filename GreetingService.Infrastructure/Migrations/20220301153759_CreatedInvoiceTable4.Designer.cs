@@ -4,6 +4,7 @@ using GreetingService.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GreetingService.Infrastructure.Migrations
 {
     [DbContext(typeof(GreetingDbContext))]
-    partial class GreetingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220301153759_CreatedInvoiceTable4")]
+    partial class CreatedInvoiceTable4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,7 +91,7 @@ namespace GreetingService.Infrastructure.Migrations
 
                     b.HasIndex("SenderEmail");
 
-                    b.ToTable("Invoices");
+                    b.ToTable("Invoice");
                 });
 
             modelBuilder.Entity("GreetingService.Core.Entities.User", b =>
