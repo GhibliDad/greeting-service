@@ -34,7 +34,7 @@ namespace GreetingService.API.Function.Invoices
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Description = "Not found")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "invoice")] HttpRequest req, int year, int month, string email)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "invoice/{year}/{month}/{email}")] HttpRequest req, int year, int month, string email)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
@@ -44,7 +44,7 @@ namespace GreetingService.API.Function.Invoices
             if (!InputValidationHelper.IsValidEmail(email))
                 return new BadRequestObjectResult($"{email} is not a valid email.");
 
-            var invoices = await _invoiceService.GetInvoicesAsync(year, month, email);
+            var invoices = await _invoiceService.GetInvoiceAsync(year, month, email);
 
             return new OkObjectResult(invoices);
         }
