@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GreetingService.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace GreetingService.Core.Interfaces
 {
     public interface IMessagingService
     {
-        public Task SendAsync<T>(T message, string subject);
+        public Task SendAsync<T>(T message, MessagingServiceSubject subject);
     }
 }

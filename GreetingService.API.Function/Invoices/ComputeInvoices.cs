@@ -27,11 +27,11 @@ namespace GreetingService.API.Function.Invoices
         private readonly IUserService _userService;
         private readonly IAuthHandler _authHandler;
 
-        public ComputeInvoices(ILogger<ComputeInvoices> log, IInvoiceService invoiceService, IGreetingRepository greetingrepository, IUserService userService, IAuthHandler authHandler)
+        public ComputeInvoices(ILogger<ComputeInvoices> log, IInvoiceService invoiceService, IGreetingRepository greetingRepository, IUserService userService, IAuthHandler authHandler)
         {
             _logger = log;
             _invoiceService = invoiceService;
-            _greetingRepository = greetingrepository;
+            _greetingRepository = greetingRepository;
             _userService = userService;
             _authHandler = authHandler;
         }

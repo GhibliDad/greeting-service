@@ -1,4 +1,5 @@
-﻿using GreetingService.API.Function.Authentication;
+﻿using Azure.Messaging.ServiceBus;
+using GreetingService.API.Function.Authentication;
 using GreetingService.Core;
 using GreetingService.Core.Interfaces;
 using GreetingService.Infrastructure;
@@ -59,6 +60,16 @@ namespace GreetingService.API.Function
             builder.Services.AddDbContext<GreetingDbContext>(options =>
             {
                 options.UseSqlServer(config["GreetingDbConnectionString"]);     //make sure that the "GreetingDbConnectionString" app setting contains the connection string value
+            });
+
+            builder.Services.AddScoped<IMessagingService, ServiceBusMessagingService>();
+
+            builder.Services.AddSingleton(c =>
+            {
+                // Create a ServiceBusClient that will authenticate using a connection string
+                
+                var serviceBusClient = new ServiceBusClient(config["ServiceBusConnectionString"]);
+                return serviceBusClient.CreateSender("main");
             });
         }
     }

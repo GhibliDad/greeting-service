@@ -1,9 +1,11 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 using GreetingService.API.Function.Authentication;
 using GreetingService.Core.Entities;
+using GreetingService.Core.Enums;
 using GreetingService.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,13 +21,13 @@ namespace GreetingService.API.Function
     public class PostGreeting
     {
         private readonly ILogger<PostGreeting> _logger;
-        private readonly IGreetingRepository _greetingRepository;
+        private readonly IMessagingService _messagingService;
         private readonly IAuthHandler _authHandler;
 
-        public PostGreeting(ILogger<PostGreeting> log, IGreetingRepository greetingRepository, IAuthHandler authHandler)
+        public PostGreeting(ILogger<PostGreeting> log, IMessagingService messagingService, IAuthHandler authHandler)
         {
             _logger = log;
-            _greetingRepository = greetingRepository;
+            _messagingService = messagingService;
             _authHandler = authHandler;
         }
 
@@ -40,18 +42,26 @@ namespace GreetingService.API.Function
             if (!await _authHandler.IsAuthorizedAsync(req))
                 return new UnauthorizedResult();
 
-            var body = await req.ReadAsStringAsync();
-            var greeting = JsonSerializer.Deserialize<Greeting>(body);
+            Greeting greeting;
 
             try
             {
-                await _greetingRepository.CreateAsync(greeting);
+                var body = await req.ReadAsStringAsync();
+                greeting = JsonSerializer.Deserialize<Greeting>(body, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            }
+            catch (Exception ex)
+            {
+                return new BadRequestObjectResult(ex.Message);
+            }
+            try
+            {
+                await _messagingService.SendAsync(greeting, MessagingServiceSubject.NewGreeting);
             }
             catch
             {
                 return new ConflictResult();
             }
-
+            
             return new AcceptedResult();
         }
     }
