@@ -1,4 +1,5 @@
-﻿using GreetingService.Core.Enums;
+﻿using GreetingService.Core.Entities;
+using GreetingService.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

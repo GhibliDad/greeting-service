@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Text.Json;
@@ -41,19 +42,22 @@ namespace GreetingService.API.Function.Users
             if (!await _authHandler.IsAuthorizedAsync(req))
                 return new UnauthorizedResult();
 
-            var body = await req.ReadAsStringAsync();
-            var user = JsonSerializer.Deserialize<User>(body);
+            User user;
 
             try
             {
-                await _userService.CreateUserAsync(user);
+                user = JsonSerializer.Deserialize<User>(req.Body, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             }
-            catch
-            {
-                return new ConflictResult();
+            catch (Exception ex)
+            { 
+                return new BadRequestObjectResult(ex.Message);
             }
 
-            return new AcceptedResult();
+            await _userService.CreateUserAsync(user);
+
+            var createdUser = await _userService.GetUserAsync(user.Email);
+
+            return new OkObjectResult(createdUser);
         }
     }
 }

@@ -1,54 +1,32 @@
-﻿using GreetingService.Core.Entities;
+﻿using Azure.Messaging.ServiceBus;
+using GreetingService.Core.Entities;
 using GreetingService.Core.Enums;
 using GreetingService.Core.Interfaces;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace GreetingService.Infrastructure.UserService
+namespace GreetingService.Infrastructure.MessagingService
 {
     public class ServiceBusMessagingService : IMessagingService
     {
-        public Task CreateAsync(Greeting greeting)
-        {
-            throw new NotImplementedException();
-        }
+        private readonly ServiceBusSender _serviceBusSender;
 
-        public Task DeleteAllAsync()
+        public ServiceBusMessagingService(ServiceBusSender serviceBusSender)
         {
-            throw new NotImplementedException();
+            _serviceBusSender = serviceBusSender;
         }
-
-        public Task DeleteAsync(Guid id)
+        public async Task SendAsync<T>(T message, MessagingServiceSubject subject)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<Greeting> GetAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Greeting>> GetAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Greeting>> GetAsync(string from, string to)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SendAsync<T>(T message, MessagingServiceSubject subject)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(Greeting greeting)
-        {
-            throw new NotImplementedException();
+            var serviceBusMessage = new ServiceBusMessage(JsonSerializer.Serialize(message))
+            {
+                Subject = subject.ToString()
+            };
+            await _serviceBusSender.SendMessageAsync(serviceBusMessage);
         }
     }
 }

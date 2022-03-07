@@ -13,15 +13,26 @@ namespace GreetingService.API.Function.Greetings
         private readonly ILogger<SbCreateGreeting> _logger;
         private readonly IGreetingRepository _greetingRepository;
 
-        public SbCreateGreeting(ILogger<SbCreateGreeting> log)
+        public SbCreateGreeting(ILogger<SbCreateGreeting> log, IGreetingRepository greetingRepository)
         {
             _logger = log;
+            _greetingRepository = greetingRepository;
         }
 
         [FunctionName("SbCreateGreeting")]
-        public void Run([ServiceBusTrigger("main", "greeting_create", Connection = "ServiceBusConnectionString")]string mySbMsg)
+        public async Task Run([ServiceBusTrigger("main", "greeting_create", Connection = "ServiceBusConnectionString")]Greeting greeting)
         {
-            _logger.LogInformation($"C# ServiceBus topic trigger function processed message: {mySbMsg}");
+            _logger.LogInformation($"C# ServiceBus topic trigger function processed message: {greeting}");
+
+            try
+            {
+                await _greetingRepository.CreateAsync(greeting);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to insert Greeting to IGreetingRepository", ex);
+                throw;
+            }
         }
     }
 }
