@@ -16,4 +16,8 @@
     <Folder Include="Exceptions\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.6.0" />
+  </ItemGroup>
+
 </Project>
