@@ -135,16 +135,28 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
   }
 }
 
-resource serviceBus 'Microsoft.ServiceBus/namespaces@2021-11-01' = {
+resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2021-11-01' = {
   name: serviceBusName
   location: location
   sku: {
     name: 'Standard'
     tier: 'Standard'
   }
-  properties: {
-    alternateName: 'string'
-    disableLocalAuth: false
-    zoneRedundant: false
+  resource mainTopic 'topics@2021-06-01-preview' = {
+    name: 'main'
+
+    resource greetingCreateSubscription 'subscriptions@2021-06-01-preview' = {
+      name: 'greeting_create'
+
+      resource rule 'rules@2021-06-01-preview' = {
+        name: 'subject'
+        properties: {
+          correlationFilter: {
+            label: 'NewGreeting'
+          }
+          filterType: 'CorrelationFilter'
+        }
+      }
+    }
   }
 }
