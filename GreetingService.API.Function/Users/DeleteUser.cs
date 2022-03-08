@@ -1,6 +1,8 @@
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using GreetingService.API.Function.Authentication;
+using GreetingService.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -15,32 +17,31 @@ namespace GreetingService.API.Function.Users
     public class DeleteUser
     {
         private readonly ILogger<DeleteUser> _logger;
+        private readonly IAuthHandler _authHandler;
+        private readonly IUserService _userService;
 
-        public DeleteUser(ILogger<DeleteUser> log)
+        public DeleteUser(ILogger<DeleteUser> log, IAuthHandler authHandler, IUserService userService)
         {
             _logger = log;
+            _authHandler = authHandler;
+            _userService = userService;
         }
 
         [FunctionName("DeleteUser")]
-        [OpenApiOperation(operationId: "Run", tags: new[] { "name" })]
-        [OpenApiParameter(name: "name", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **Name** parameter")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
+        [OpenApiOperation(operationId: "Run", tags: new[] { "User" })]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Description = "The OK response")]
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Description = "Not found")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "user/{email}")] HttpRequest req, string email)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+            if (!await _authHandler.IsAuthorizedAsync(req))
+                return new UnauthorizedResult();
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            await _userService.DeleteUserAsync(email);
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
-
-            return new OkObjectResult(responseMessage);
+            return new OkResult();
         }
     }
 }

@@ -43,7 +43,7 @@ namespace GreetingService.API.Function.Users
             //if (!email == null)
             //    return new BadRequestObjectResult($"{id} is not a valid Guid");
 
-            var user = _userService.GetUserAsync(email);
+            var user = await _userService.GetUserAsync(email);
 
             if (user == null)
                 return new NotFoundObjectResult("Not found");
