@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using GreetingService.API.Function.Authentication;
 using GreetingService.Core;
 using GreetingService.Core.Entities;
+using GreetingService.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -19,13 +20,13 @@ namespace GreetingService.API.Function.Users
     public class PutUser
     {
         private readonly ILogger<PutUser> _logger;
-        private readonly IUserService _userService;
+        private readonly IMessagingService _messagingService;
         private readonly IAuthHandler _authHandler;
 
-        public PutUser(ILogger<PutUser> log, IUserService userService, IAuthHandler authHandler)
+        public PutUser(ILogger<PutUser> log, IMessagingService messagingService, IAuthHandler authHandler)
         {
             _logger = log;
-            _userService = userService;
+            _messagingService = messagingService;
             _authHandler = authHandler;
         }
 
@@ -38,16 +39,26 @@ namespace GreetingService.API.Function.Users
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            var body = await req.ReadAsStringAsync();
-            var user = JsonSerializer.Deserialize<User>(body);
+            if (!await _authHandler.IsAuthorizedAsync(req))
+                return new UnauthorizedResult();
+
 
             try
             {
-                await _userService.UpdateUserAsync(user);
+                var body = await req.ReadAsStringAsync();
+                var user = JsonSerializer.Deserialize<User>(body);
             }
             catch
             {
                 return new NotFoundResult();
+            }
+            try
+            {
+
+            }
+            catch
+            {
+
             }
 
             return new AcceptedResult();

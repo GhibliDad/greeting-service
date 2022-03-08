@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GreetingService.API.Function.Authentication;
 using GreetingService.Core;
 using GreetingService.Core.Entities;
+using GreetingService.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -20,13 +21,13 @@ namespace GreetingService.API.Function.Users
     public class PostUser
     {
         private readonly ILogger<PostUser> _logger;
-        private readonly IUserService _userService;
+        private readonly IMessagingService _messagingService;
         private readonly IAuthHandler _authHandler;
 
-        public PostUser(ILogger<PostUser> log, IUserService userService, IAuthHandler authHandler)
+        public PostUser(ILogger<PostUser> log, IMessagingService messagingService, IAuthHandler authHandler)
         {
             _logger = log;
-            _userService = userService;
+            _messagingService = messagingService;
             _authHandler = authHandler;
         }
 
@@ -53,11 +54,9 @@ namespace GreetingService.API.Function.Users
                 return new BadRequestObjectResult(ex.Message);
             }
 
-            await _userService.CreateUserAsync(user);
+            await _messagingService.SendAsync(user, Core.Enums.MessagingServiceSubject.NewUser);
 
-            var createdUser = await _userService.GetUserAsync(user.Email);
-
-            return new OkObjectResult(createdUser);
+            return new AcceptedResult();
         }
     }
 }

@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
+using GreetingService.API.Function.Authentication;
 using GreetingService.Core.Entities;
 using GreetingService.Core.Enums;
 using GreetingService.Core.Interfaces;
@@ -20,14 +21,14 @@ namespace GreetingService.API.Function
     public class PutGreeting
     {
         private readonly ILogger<PutGreeting> _logger;
-        private readonly IGreetingRepository _greetingRepository;
         private readonly IMessagingService _messagingService;
+        private readonly IAuthHandler _authHandler;
 
-        public PutGreeting(ILogger<PutGreeting> log, IGreetingRepository greetingRepository, IMessagingService messagingService)
+        public PutGreeting(ILogger<PutGreeting> log, IMessagingService messagingService, IAuthHandler authHandler)
         {
             _logger = log;
-            _greetingRepository = greetingRepository;
             _messagingService = messagingService;
+            _authHandler = authHandler;
         }
 
         [FunctionName("PutGreeting")]
@@ -38,6 +39,8 @@ namespace GreetingService.API.Function
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
+            if (!await _authHandler.IsAuthorizedAsync(req))
+                return new UnauthorizedResult();
 
             Greeting greeting;
 
