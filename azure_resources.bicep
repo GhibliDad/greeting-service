@@ -139,12 +139,11 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
   }
 }
 
-resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2021-11-01' = {
+resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2018-01-01-preview' = {
   name: serviceBusName
   location: location
   sku: {
     name: 'Standard'
-    tier: 'Standard'
   }
   resource mainTopic 'topics@2021-06-01-preview' = {
     name: 'main'
