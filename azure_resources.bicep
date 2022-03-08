@@ -113,12 +113,12 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
           value: 'mrblobby'
         }
         {
-          'name': 'FUNCTIONS_EXTENSION_VERSION'
-          'value': '~4'
+          name: 'FUNCTIONS_EXTENSION_VERSION'
+          value: '~4'
         }
         {
-          'name': 'FUNCTIONS_WORKER_RUNTIME'
-          'value': 'dotnet'
+          name: 'FUNCTIONS_WORKER_RUNTIME'
+          value: 'dotnet'
         }
         {
           name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
@@ -127,6 +127,10 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
         {
           name: 'GreetingDbConnectionString'
           value: 'Data Source=tcp:${reference(sqlServer.id).fullyQualifiedDomainName},1433;Initial Catalog=${sqlDbName};User Id=${sqlAdminUser};Password=\'${sqlAdminPassword}\';'
+        }
+        {
+          name: 'ServiceBusConnectionString'
+          value: listKeys('${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', serviceBusNamespace.apiVersion).primaryConnectionString
         }
         // WEBSITE_CONTENTSHARE will also be auto-generated - https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings#website_contentshare
         // WEBSITE_RUN_FROM_PACKAGE will be set to 1 by func azure functionapp publish
