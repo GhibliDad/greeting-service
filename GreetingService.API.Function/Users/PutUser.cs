@@ -42,7 +42,6 @@ namespace GreetingService.API.Function.Users
             if (!await _authHandler.IsAuthorizedAsync(req))
                 return new UnauthorizedResult();
 
-
             try
             {
                 var body = await req.ReadAsStringAsync();
