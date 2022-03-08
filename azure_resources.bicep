@@ -14,6 +14,7 @@ var functionAppName = '${appName}'
 var sqlServerName = '${appName}sqlserver${uniqueString(resourceGroup().id)}'
 var sqlDbName = '${appName}sqlDatabase${uniqueString(resourceGroup().id)}'
 var sqlFirewallName = '${appName}sqlFirewall${uniqueString(resourceGroup().id)}'
+var serviceBusName = '${appName}serviceBus${uniqueString(resourceGroup().id)}'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   name: storageAccountName
@@ -131,5 +132,19 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
         // WEBSITE_RUN_FROM_PACKAGE will be set to 1 by func azure functionapp publish
       ]
     }
+  }
+}
+
+resource serviceBus 'Microsoft.ServiceBus/namespaces@2021-11-01' = {
+  name: serviceBusName
+  location: location
+  sku: {
+    name: 'Standard'
+    tier: 'Standard'
+  }
+  properties: {
+    alternateName: 'string'
+    disableLocalAuth: false
+    zoneRedundant: false
   }
 }
