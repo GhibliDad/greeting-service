@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GreetingService.API.Function.Authentication;
 using GreetingService.Core;
 using GreetingService.Core.Entities;
+using GreetingService.Core.Enums;
 using GreetingService.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -54,7 +55,7 @@ namespace GreetingService.API.Function.Users
                 return new BadRequestObjectResult(ex.Message);
             }
 
-            await _messagingService.SendAsync(user, Core.Enums.MessagingServiceSubject.NewUser);
+            await _messagingService.SendAsync(user, MessagingServiceSubject.NewUser);
 
             return new AcceptedResult();
         }
