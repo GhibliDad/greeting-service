@@ -1,8 +1,10 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 using GreetingService.Core.Entities;
+using GreetingService.Core.Enums;
 using GreetingService.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,11 +21,13 @@ namespace GreetingService.API.Function
     {
         private readonly ILogger<PutGreeting> _logger;
         private readonly IGreetingRepository _greetingRepository;
+        private readonly IMessagingService _messagingService;
 
-        public PutGreeting(ILogger<PutGreeting> log, IGreetingRepository greetingRepository)
+        public PutGreeting(ILogger<PutGreeting> log, IGreetingRepository greetingRepository, IMessagingService messagingService)
         {
             _logger = log;
             _greetingRepository = greetingRepository;
+            _messagingService = messagingService;
         }
 
         [FunctionName("PutGreeting")]
@@ -34,12 +38,22 @@ namespace GreetingService.API.Function
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            var body = await req.ReadAsStringAsync();
-            var greeting = JsonSerializer.Deserialize<Greeting>(body);
+
+            Greeting greeting;
 
             try
             {
-                await _greetingRepository.UpdateAsync(greeting);
+                var body = await req.ReadAsStringAsync();
+                greeting = JsonSerializer.Deserialize<Greeting>(body, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                //await _greetingRepository.UpdateAsync(greeting);
+            }
+            catch (Exception ex)
+            {
+                return new BadRequestObjectResult(ex.Message);
+            }
+            try
+            {
+                await _messagingService.SendAsync(greeting, MessagingServiceSubject.UpdateGreeting);
             }
             catch
             {
