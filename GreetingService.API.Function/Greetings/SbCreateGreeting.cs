@@ -12,11 +12,13 @@ namespace GreetingService.API.Function.Greetings
     {
         private readonly ILogger<SbCreateGreeting> _logger;
         private readonly IGreetingRepository _greetingRepository;
+        private readonly IMessagingService _messagingService;
 
-        public SbCreateGreeting(ILogger<SbCreateGreeting> log, IGreetingRepository greetingRepository)
+        public SbCreateGreeting(ILogger<SbCreateGreeting> log, IGreetingRepository greetingRepository, IMessagingService messagingService)
         {
             _logger = log;
             _greetingRepository = greetingRepository;
+            _messagingService = messagingService;
         }
 
         [FunctionName("SbCreateGreeting")]
