@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GreetingService.Core;
 using GreetingService.Core.Entities;
+using GreetingService.Core.Exceptions;
 using GreetingService.Core.Interfaces;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
@@ -43,12 +44,16 @@ namespace GreetingService.API.Function.Invoices
                     {
                         invoice = new Invoice
                         {
-                            Greetings = new[] { greeting },
                             Month = greeting.Timestamp.Month,
                             Year = greeting.Timestamp.Year,
                             Sender = user,
                         };
                         await _invoiceService.CreateOrUpdateInvoiceAsync(invoice);
+
+                        invoice = await _invoiceService.GetInvoiceAsync(greeting.Timestamp.Year, greeting.Timestamp.Month, greeting.From);
+                        invoice.Greetings = invoice.Greetings.Append(greeting).ToList();
+                        await _invoiceService.CreateOrUpdateInvoiceAsync(invoice);
+
                     }
                     catch (Exception ex)
                     {
