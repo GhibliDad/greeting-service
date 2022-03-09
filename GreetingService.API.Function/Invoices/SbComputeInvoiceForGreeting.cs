@@ -65,7 +65,8 @@ namespace GreetingService.API.Function.Invoices
                 {
                     try
                     {
-
+                        invoice.Greetings = invoice.Greetings.Append(greeting).ToList();
+                        await _invoiceService.CreateOrUpdateInvoiceAsync(invoice);
                     }
                     catch (Exception ex)
                     {
