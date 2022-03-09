@@ -37,7 +37,7 @@ namespace GreetingService.API.Function.Invoices
         }
 
         [FunctionName("ComputeInvoices")]
-        public async Task Run([TimerTrigger("*/30 * * * * *")] TimerInfo myTimer, ILogger log)      //cron expression: */30 * * * * * means execute every 30 seconds
+        public async Task Run([TimerTrigger("0 0 11 * * *")] TimerInfo myTimer, ILogger log)      //cron expression: */30 * * * * * means execute every 30 seconds
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
