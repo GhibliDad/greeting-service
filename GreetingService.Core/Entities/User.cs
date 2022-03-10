@@ -31,5 +31,9 @@ namespace GreetingService.Core.Entities
         public string Password { get; set; }
         public DateTime Created { get; set; } = DateTime.Now;
         public DateTime Modified { get; set; } = DateTime.Now;
+        //public string ApprovalStatus { get; set; } = "Pending";
+        //public string ApprovalStatusNote { get; set; }
+        //public string ApprovalCode { get; set; }
+        //public DateTime ApprovalExpiry { get; set; }
     }
 }
