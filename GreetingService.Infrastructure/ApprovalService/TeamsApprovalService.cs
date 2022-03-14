@@ -33,12 +33,13 @@ namespace GreetingService.Infrastructure.ApprovalService
         {
             // Please note that response body needs to be extracted and read 
             // as Connectors do not throw 429s
-            var json = "";
+
+            var dynamicJsonFile = AdaptiveCardTemplate.ReturnJson(user);
 
             try
             {
                 // Perform Connector POST operation     
-                var httpResponseMessage = await _httpClient.PostAsync(_teamsWebhookUrl, new StringContent(json));
+                var httpResponseMessage = await _httpClient.PostAsync(_teamsWebhookUrl, new StringContent(dynamicJsonFile));
                 // Read response content
                 var responseContent = await httpResponseMessage.Content.ReadAsStringAsync();
                 if (responseContent.Contains("Microsoft Teams endpoint returned HTTP error 429"))
