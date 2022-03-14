@@ -18,6 +18,7 @@ namespace GreetingService.Infrastructure.UserService
         {
             _greetingDbContext = greetingDbContext;
         }
+
         public async Task CreateUserAsync(User user)
         {
             await _greetingDbContext.Users.AddAsync(user);
@@ -94,6 +95,16 @@ namespace GreetingService.Infrastructure.UserService
 
             existingUser.Modified = DateTime.Now;
             _greetingDbContext.SaveChanges();
+        }
+
+        public Task ApproveUserAsync(string approvalCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RejectUserAsync(string approvalCode)
+        {
+            throw new NotImplementedException();
         }
     }
 }
