@@ -38,7 +38,7 @@ namespace GreetingService.Core.Entities
         public DateTime Created { get; set; } = DateTime.Now;
         public DateTime Modified { get; set; } = DateTime.Now;
         public string ApprovalStatus { get; set; } = PENDINGSTATUS;
-        public string ApprovalStatusNote { get; set; }
+        public string ApprovalStatusNote { get; set; } = "something";
         public string ApprovalCode { get; set; } = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)).Replace("/", "").Replace("?", "");
         public DateTime ApprovalExpiry { get; set; } = DateTime.Now.AddDays(1);
     }

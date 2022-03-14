@@ -108,6 +108,7 @@ namespace GreetingService.Infrastructure.UserService
             }
 
             existingUser.ApprovalStatus = "approved";
+            _greetingDbContext.SaveChanges();
         }
 
         public async Task RejectUserAsync(string approvalCode)
@@ -120,6 +121,7 @@ namespace GreetingService.Infrastructure.UserService
             }
 
             existingUser.ApprovalStatus = "rejected";
+            _greetingDbContext.SaveChanges();
         }
     }
 }
