@@ -4,6 +4,7 @@ param appName string
 param location string = resourceGroup().location
 param sqlAdminUser string = 'towa.shimizu'
 param sqlAdminPassword string
+param teamsWebHook string
 
 // storage accounts must be between 3 and 24 characters in length and use numbers and lower-case letters only
 var storageAccountName = '${substring(appName,0,10)}${uniqueString(resourceGroup().id)}' 
@@ -131,6 +132,10 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
         {
           name: 'ServiceBusConnectionString'
           value: listKeys('${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', serviceBusNamespace.apiVersion).primaryConnectionString
+        }
+        {
+          name: 'TeamsWebhookUrl'
+          value: teamsWebHook
         }
         // WEBSITE_CONTENTSHARE will also be auto-generated - https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings#website_contentshare
         // WEBSITE_RUN_FROM_PACKAGE will be set to 1 by func azure functionapp publish
