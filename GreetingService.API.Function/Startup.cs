@@ -25,6 +25,7 @@ namespace GreetingService.API.Function
             var config = builder.GetContext().Configuration;
             
             builder.Services.AddHttpClient();
+
             builder.Services.AddLogging();
 
             //Create a Serilog logger and register it as a logger
