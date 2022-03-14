@@ -32,11 +32,18 @@ namespace GreetingService.API.Function.Users
         [OpenApiParameter(name: "name", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **Name** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req, )
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "user/approve/{code}")] HttpRequest req, string code)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            
+            try
+            {
+
+            }
+            catch
+            {
+
+            }
         }
     }
 }
