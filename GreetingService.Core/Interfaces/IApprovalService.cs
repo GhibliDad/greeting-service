@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GreetingService.Core.Interfaces
 {
-    internal interface IApprovalService
+    public interface IApprovalService
     {
         public Task BeginUserApprovalAsync(User user);
     }

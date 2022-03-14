@@ -11,7 +11,7 @@ namespace GreetingService.Core.Entities
 {
     public class User
     {
-        public const string APPROVESTATUS = "approved";
+        public const string APPROVEDSTATUS = "approved";
         public const string PENDINGSTATUS = "pending";
         public const string REJECTEDSTATUS = "rejected";
         public const string BANNEDSTATUS = "banned";
