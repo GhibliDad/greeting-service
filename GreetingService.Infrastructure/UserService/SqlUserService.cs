@@ -1,5 +1,6 @@
 ﻿using GreetingService.Core;
 using GreetingService.Core.Entities;
+using GreetingService.Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -97,14 +98,28 @@ namespace GreetingService.Infrastructure.UserService
             _greetingDbContext.SaveChanges();
         }
 
-        public Task ApproveUserAsync(string approvalCode)
+        public async Task ApproveUserAsync(string approvalCode)
         {
-            throw new NotImplementedException();
+            var existingUser = _greetingDbContext.Users.FirstOrDefault(x => x.ApprovalCode.Equals(approvalCode));
+
+            if (existingUser == null)
+            {
+                throw new UserNotFoundException("User not found");
+            }
+
+            existingUser.ApprovalStatus = "approved";
         }
 
-        public Task RejectUserAsync(string approvalCode)
+        public async Task RejectUserAsync(string approvalCode)
         {
-            throw new NotImplementedException();
+            var existingUser = _greetingDbContext.Users.FirstOrDefault(x => x.ApprovalCode.Equals(approvalCode));
+
+            if (existingUser == null)
+            {
+                throw new UserNotFoundException("User not found");
+            }
+
+            existingUser.ApprovalStatus = "rejected";
         }
     }
 }

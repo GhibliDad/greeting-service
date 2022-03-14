@@ -1,8 +1,10 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using GreetingService.API.Function.Authentication;
 using GreetingService.Core;
+using GreetingService.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -38,12 +40,14 @@ namespace GreetingService.API.Function.Users
 
             try
             {
-
+                await _userService.ApproveUserAsync(code);
             }
-            catch
+            catch (UserNotFoundException ex)
             {
-
+                return new NotFoundObjectResult(ex.Message);
             }
+
+            return new AcceptedResult();
         }
     }
 }
