@@ -1,6 +1,9 @@
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using GreetingService.API.Function.Authentication;
+using GreetingService.Core;
+using GreetingService.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -15,10 +18,14 @@ namespace GreetingService.API.Function.Users
     public class RejectUser
     {
         private readonly ILogger<RejectUser> _logger;
+        private readonly IUserService _userService;
+        private readonly IAuthHandler _authHandler;
 
-        public RejectUser(ILogger<RejectUser> log)
+        public RejectUser(ILogger<RejectUser> log, IUserService userService, IAuthHandler authHandler)
         {
             _logger = log;
+            _userService = userService;
+            _authHandler = authHandler;
         }
 
         [FunctionName("RejectUser")]
@@ -26,21 +33,20 @@ namespace GreetingService.API.Function.Users
         [OpenApiParameter(name: "name", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **Name** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "user/approve/{code}")] HttpRequest req, string code)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+            try
+            {
+                await _userService.RejectUserAsync(code);
+            }
+            catch (UserNotFoundException ex)
+            {
+                return new NotFoundObjectResult(ex.Message);
+            }
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
-
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
-
-            return new OkObjectResult(responseMessage);
+            return new AcceptedResult();
         }
     }
 }
