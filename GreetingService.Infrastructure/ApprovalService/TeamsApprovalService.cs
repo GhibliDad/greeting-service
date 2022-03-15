@@ -12,7 +12,7 @@ using System.Net.Http;
 
 namespace GreetingService.Infrastructure.ApprovalService
 {
-    internal class TeamsApprovalService : IApprovalService
+    public class TeamsApprovalService : IApprovalService
     {
         private readonly ILogger<TeamsApprovalService> _logger;
         private readonly IGreetingRepository _greetingRepository;

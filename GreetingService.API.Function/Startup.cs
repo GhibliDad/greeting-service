@@ -5,6 +5,7 @@ using GreetingService.Core.Interfaces;
 using GreetingService.Infrastructure;
 using GreetingService.Infrastructure.GreetingRepository;
 using GreetingService.Infrastructure.MessagingService;
+using GreetingService.Infrastructure.ApprovalService; 
 using GreetingService.Infrastructure.UserService;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +61,8 @@ namespace GreetingService.API.Function
             builder.Services.AddScoped<IInvoiceService, SqlInvoiceService>();
            
             builder.Services.AddScoped<IMessagingService, ServiceBusMessagingService>();
+
+            builder.Services.AddScoped<IApprovalService, TeamsApprovalService>();
 
             builder.Services.AddDbContext<GreetingDbContext>(options =>
             {
