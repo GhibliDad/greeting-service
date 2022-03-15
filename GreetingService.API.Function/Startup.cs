@@ -9,12 +9,15 @@ using GreetingService.Infrastructure.ApprovalService;
 using GreetingService.Infrastructure.UserService;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Azure.KeyVault;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
 using Serilog;
 using Serilog.Sinks.AzureBlobStorage;
 using System.Reflection;
+using Azure.Identity;
+using System;
 
 [assembly: FunctionsStartup(typeof(GreetingService.API.Function.Startup))]
 namespace GreetingService.API.Function
@@ -24,7 +27,9 @@ namespace GreetingService.API.Function
         public override void Configure(IFunctionsHostBuilder builder)
         {
             var config = builder.GetContext().Configuration;
-            
+
+            //builder.Services.AddAzureKeyVault();
+
             builder.Services.AddHttpClient();
 
             builder.Services.AddLogging();
@@ -59,7 +64,7 @@ namespace GreetingService.API.Function
             builder.Services.AddScoped<IAuthHandler, BasicAuthHandler>();
 
             builder.Services.AddScoped<IInvoiceService, SqlInvoiceService>();
-           
+
             builder.Services.AddScoped<IMessagingService, ServiceBusMessagingService>();
 
             builder.Services.AddScoped<IApprovalService, TeamsApprovalService>();
@@ -72,10 +77,15 @@ namespace GreetingService.API.Function
             builder.Services.AddSingleton(c =>
             {
                 // Create a ServiceBusClient that will authenticate using a connection string
-                
+
                 var serviceBusClient = new ServiceBusClient(config["ServiceBusConnectionString"]);
                 return serviceBusClient.CreateSender("main");
             });
+        }
+
+        public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
+        {
+            builder.ConfigurationBuilder.AddAzureKeyVault(Environment.GetEnvironmentVariable("KeyVaultUri"));
         }
     }
 }
