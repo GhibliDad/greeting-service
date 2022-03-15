@@ -26,6 +26,7 @@ namespace GreetingService.API.Function.Users
 
             try
             {
+                
                 await _approvalService.BeginUserApprovalAsync(user);
             }
             catch (Exception ex)
