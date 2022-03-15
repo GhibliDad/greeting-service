@@ -14,6 +14,7 @@ namespace GreetingService.Infrastructure.ApprovalService
             var jsonFile =
                  @$"{{{{
                     ""type"": ""AdaptiveCard"",
+                    ""summary"": ""Approval for new GreetingService user"",
                     ""body"": [
                         {{
                             ""type"": ""ColumnSet"",
