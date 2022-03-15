@@ -28,7 +28,7 @@ namespace GreetingService.API.Function
         {
             var config = builder.GetContext().Configuration;
 
-            builder.Services.AddAzureKeyVault();
+            //builder.Services.AddAzureKeyVault();
 
             builder.Services.AddHttpClient();
 
@@ -64,7 +64,7 @@ namespace GreetingService.API.Function
             builder.Services.AddScoped<IAuthHandler, BasicAuthHandler>();
 
             builder.Services.AddScoped<IInvoiceService, SqlInvoiceService>();
-           
+
             builder.Services.AddScoped<IMessagingService, ServiceBusMessagingService>();
 
             builder.Services.AddScoped<IApprovalService, TeamsApprovalService>();
@@ -77,7 +77,7 @@ namespace GreetingService.API.Function
             builder.Services.AddSingleton(c =>
             {
                 // Create a ServiceBusClient that will authenticate using a connection string
-                
+
                 var serviceBusClient = new ServiceBusClient(config["ServiceBusConnectionString"]);
                 return serviceBusClient.CreateSender("main");
             });
@@ -85,6 +85,7 @@ namespace GreetingService.API.Function
 
         public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
         {
-            var 
+            builder.ConfigurationBuilder.AddAzureKeyVault(Environment.GetEnvironmentVariable("KeyVaultUri"));
         }
+    }
 }
