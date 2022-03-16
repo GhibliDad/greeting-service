@@ -11,7 +11,7 @@ var storageAccountName = '${substring(appName,0,10)}${uniqueString(resourceGroup
 var logStorageAccountName = '${substring(appName,0,7)}log${uniqueString(resourceGroup().id)}'
 var hostingPlanName = '${appName}${uniqueString(resourceGroup().id)}'
 var appInsightsName = '${appName}${uniqueString(resourceGroup().id)}'
-var functionAppName = '${appName}'
+var functionAppName = appName
 var sqlServerName = '${appName}sqlserver${uniqueString(resourceGroup().id)}'
 var sqlDbName = '${appName}sqlDatabase${uniqueString(resourceGroup().id)}'
 var sqlFirewallName = '${appName}sqlFirewall${uniqueString(resourceGroup().id)}'
@@ -94,6 +94,9 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
   name: functionAppName
   location: location
   kind: 'functionapp'
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     httpsOnly: true
     serverFarmId: hostingPlan.id
@@ -138,10 +141,6 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
         {
           name: 'TeamsWebhookUrl'
           value: teamsWebHook
-        }
-        {
-          name: ''
-          value: ''
         }
         // WEBSITE_CONTENTSHARE will also be auto-generated - https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings#website_contentshare
         // WEBSITE_RUN_FROM_PACKAGE will be set to 1 by func azure functionapp publish
