@@ -112,7 +112,7 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
         }
         {
           name: 'LogStorageAccount'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${logStorageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(logStorageAccount.id, logStorageAccount.apiVersion).keys[0].value}'
+          value: '@Microsoft.KeyVault(SecretUri=https://${keyVaultName}.vault.azure.net/secrets/LogStorageAccount/)'
         }
         {
           name: 'towa'
@@ -132,15 +132,19 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
         }
         {
           name: 'GreetingDbConnectionString'
-          value: 'Data Source=tcp:${reference(sqlServer.id).fullyQualifiedDomainName},1433;Initial Catalog=${sqlDbName};User Id=${sqlAdminUser};Password=\'${sqlAdminPassword}\';'
+          value: '@Microsoft.KeyVault(SecretUri=https://${keyVaultName}.vault.azure.net/secrets/GreetingDbConnectionString/)'
         }
         {
           name: 'ServiceBusConnectionString'
-          value: listKeys('${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', serviceBusNamespace.apiVersion).primaryConnectionString
+          value: '@Microsoft.KeyVault(SecretUri=https://${keyVaultName}.vault.azure.net/secrets/ServiceBusConnectionString/)'
         }
         {
           name: 'TeamsWebhookUrl'
           value: teamsWebHook
+        }
+        {
+          name: 'KeyVaultUri'
+          value: 'https://${keyVaultName}.vault.azure.net/'
         }
         // WEBSITE_CONTENTSHARE will also be auto-generated - https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings#website_contentshare
         // WEBSITE_RUN_FROM_PACKAGE will be set to 1 by func azure functionapp publish
@@ -266,8 +270,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' = {
       }
     ]
   }
-  resource loggingStorageAccountSecret 'secrets@2021-11-01-preview' = {
-    name: 'LoggingStorageAccount'
+  resource logStorageAccountSecret 'secrets@2021-11-01-preview' = {
+    name: 'LogStorageAccount'
     properties: {
       value: 'DefaultEndpointsProtocol=https;AccountName=${logStorageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(logStorageAccount.id, logStorageAccount.apiVersion).keys[0].value}'
     }
