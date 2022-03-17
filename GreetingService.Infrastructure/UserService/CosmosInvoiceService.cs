@@ -10,17 +10,17 @@ namespace GreetingService.Infrastructure.UserService
 {
     public class CosmosInvoiceService : IInvoiceService
     {
-        public Task CreateOrUpdateInvoiceAsync(Invoice invoice)
+        public async Task CreateOrUpdateInvoiceAsync(Invoice invoice)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Invoice> GetInvoiceAsync(int year, int month, string email)
+        public async Task<Invoice> GetInvoiceAsync(int year, int month, string email)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Invoice>> GetInvoicesAsync(int year, int month)
+        public async Task<IEnumerable<Invoice>> GetInvoicesAsync(int year, int month)
         {
             throw new NotImplementedException();
         }

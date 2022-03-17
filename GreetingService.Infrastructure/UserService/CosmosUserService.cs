@@ -10,32 +10,32 @@ namespace GreetingService.Infrastructure.UserService
 {
     public class CosmosUserService : IUserService
     {
-        public Task ApproveUserAsync(string approvalCode)
+        public async Task ApproveUserAsync(string approvalCode)
         {
             throw new NotImplementedException();
         }
 
-        public Task CreateUserAsync(User user)
+        public async Task CreateUserAsync(User user)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteAllUsersAsync()
+        public async Task DeleteAllUsersAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteUserAsync(string email)
+        public async Task DeleteUserAsync(string email)
         {
             throw new NotImplementedException();
         }
 
-        public Task<User> GetUserAsync(string email)
+        public async Task<User> GetUserAsync(string email)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<User>> GetUsersAsync()
+        public async Task<IEnumerable<User>> GetUsersAsync()
         {
             throw new NotImplementedException();
         }
@@ -45,17 +45,17 @@ namespace GreetingService.Infrastructure.UserService
             throw new NotImplementedException();
         }
 
-        public Task<bool> IsValidUserAsync(string username, string password)
+        public async Task<bool> IsValidUserAsync(string username, string password)
         {
             throw new NotImplementedException();
         }
 
-        public Task RejectUserAsync(string approvalCode)
+        public async Task RejectUserAsync(string approvalCode)
         {
             throw new NotImplementedException();
         }
 
-        public Task UpdateUserAsync(User user)
+        public async Task UpdateUserAsync(User user)
         {
             throw new NotImplementedException();
         }

@@ -10,37 +10,37 @@ namespace GreetingService.Infrastructure.GreetingRepository
 {
     public class CosmosGreetingRepository : IGreetingRepository
     {
-        public Task CreateAsync(Greeting greeting)
+        public async Task CreateAsync(Greeting greeting)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteAllAsync()
+        public async Task DeleteAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Greeting> GetAsync(Guid id)
+        public async Task<Greeting> GetAsync(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Greeting>> GetAsync()
+        public async Task<IEnumerable<Greeting>> GetAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Greeting>> GetAsync(string from, string to)
+        public async Task<IEnumerable<Greeting>> GetAsync(string from, string to)
         {
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(Greeting greeting)
+        public async Task UpdateAsync(Greeting greeting)
         {
             throw new NotImplementedException();
         }
