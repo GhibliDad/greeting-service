@@ -13,9 +13,9 @@ namespace GreetingService.Infrastructure.GreetingRepository
 {
     public class CosmosGreetingRepository : IGreetingRepository
     {
-        private const string _cosmosContainerName = "greetingscdb";
-        //private const string _cosmosContainerCsvName = "greetings-csv";
         private readonly CosmosClient _cosmosClient;
+        private const string _cosmosAccountName = "greetingscdb";
+        private const string _cosmosContainerName = "greetings";
         private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true, };
         private readonly string _connectionString;
 
