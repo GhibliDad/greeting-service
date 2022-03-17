@@ -13,17 +13,15 @@ namespace GreetingService.Infrastructure.GreetingRepository
 {
     public class CosmosGreetingRepository : IGreetingRepository
     {
-        private readonly CosmosClient _cosmosClient;
-        private const string _cosmosAccountName = "greetingscdb";
+        private const string _cosmosDbName = "greetingscsd";
         private const string _cosmosContainerName = "greetings";
-        private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true, };
-        private readonly string _connectionString;
+        private readonly CosmosClient _cosmosClient;
+        private readonly Container _container;
 
         public CosmosGreetingRepository(IConfiguration configuration)
         {
-            _connectionString = configuration["LogStorageAccount"];
-            _cosmosClient = new CosmosClient(_connectionString, _cosmosContainerName);
-            //_cosmosClient.CreateDatabaseIfNotExistsAsync();
+            var _connectionString = configuration["CosmosDbConnectionString"];
+            _cosmosClient = new CosmosClient(_connectionString, "");
         }
 
         public async Task CreateAsync(Greeting greeting)
