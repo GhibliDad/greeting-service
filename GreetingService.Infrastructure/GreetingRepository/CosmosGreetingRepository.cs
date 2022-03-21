@@ -1,6 +1,7 @@
 ﻿using GreetingService.Core.Entities;
 using GreetingService.Core.Interfaces;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -74,7 +75,19 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
         public async Task<IEnumerable<Greeting>> GetAsync(string from, string to)
         {
-            throw new NotImplementedException();
+            List<Greeting> greetingList = new();
+            var iterator = _container.GetItemLinqQueryable<Greeting>()
+                .Where(x => x.From.Equals(from, StringComparison.OrdinalIgnoreCase) && x.To.Equals(to, StringComparison.OrdinalIgnoreCase))
+                .ToFeedIterator();
+
+            while (iterator.HasMoreResults)
+            {
+                foreach (var item in await iterator.ReadNextAsync())
+                {
+                    greetingList.Add(item);
+                }
+            }
+            return greetingList;
         }
 
         public async Task UpdateAsync(Greeting greeting)
