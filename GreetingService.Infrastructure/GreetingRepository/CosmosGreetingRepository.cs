@@ -49,7 +49,9 @@ namespace GreetingService.Infrastructure.GreetingRepository
             {
                 var stringId = id.ToString();
                 var response = await _container.ReadItemAsync<Greeting>(stringId, new PartitionKey(stringId));
-                //var response = await _container.FirstOrDefaultAsync(x => x.Id == greeting.Id);
+
+                //var response = await _container.GetItemLinqQueryable<Greeting>(x => x.Id == id);
+
                 return response;
             }
             catch (CosmosException) //For handling item not found and other exceptions
