@@ -34,6 +34,7 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
         public async Task DeleteAllAsync()
         {
+            //await _container.R
             throw new NotImplementedException();
         }
 
@@ -46,8 +47,10 @@ namespace GreetingService.Infrastructure.GreetingRepository
         {
             try
             {
-                var response = await _container.ReadItemAsync<Greeting>(id, new PartitionKey(id);
-                return response.Resource;
+                var stringId = id.ToString();
+                var response = await _container.ReadItemAsync<Greeting>(stringId, new PartitionKey(stringId));
+                //var response = await _container.FirstOrDefaultAsync(x => x.Id == greeting.Id);
+                return response;
             }
             catch (CosmosException) //For handling item not found and other exceptions
             {
@@ -74,7 +77,8 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
         public async Task UpdateAsync(Greeting greeting)
         {
-            throw new NotImplementedException();
+            var stringId = greeting.Id.ToString();
+            await _container.UpsertItemAsync(greeting, new PartitionKey(stringId));
         }
     }
 }
