@@ -39,7 +39,7 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
         public async Task DeleteAsync(Guid id)
         {
-            await await _container.DeleteItemAsync<Greeting>(id);
+            await _container.DeleteItemAsync<Greeting>(id.ToString(), new PartitionKey(id.ToString()));
         }
 
         public async Task<Greeting> GetAsync(Guid id)

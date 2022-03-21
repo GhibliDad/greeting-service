@@ -18,6 +18,7 @@ using Serilog.Sinks.AzureBlobStorage;
 using System.Reflection;
 using Azure.Identity;
 using System;
+using Microsoft.Azure.Cosmos;
 
 [assembly: FunctionsStartup(typeof(GreetingService.API.Function.Startup))]
 namespace GreetingService.API.Function
@@ -83,6 +84,12 @@ namespace GreetingService.API.Function
 
                 var serviceBusClient = new ServiceBusClient(config["ServiceBusConnectionString"]);
                 return serviceBusClient.CreateSender("main");
+            });
+
+            builder.Services.AddSingleton(c =>
+            {
+                var cosmosClient = new CosmosClient(config["CosmosDbConnectionString"]);
+                return cosmosClient;
             });
         }
 
