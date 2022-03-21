@@ -56,16 +56,17 @@ namespace GreetingService.API.Function
             //builder.Services.AddSingleton<IGreetingRepository, MemoryGreetingRepository>();
             //builder.Services.AddScoped<IGreetingRepository, BlobGreetingRepository>();
             //builder.Services.AddScoped<IGreetingRepository, SqlGreetingRepository>();
-            builder.Services.AddScoped<IGreetingRepository, CosmosGreetingRepository>();
+            builder.Services.AddSingleton<IGreetingRepository, CosmosGreetingRepository>();
 
             //builder.Services.AddScoped<IUserService, AppSettingsUserService>();
             //builder.Services.AddScoped<IUserService, BlobUserService>();
             //builder.Services.AddScoped<IUserService, SqlUserService>();
-            builder.Services.AddScoped<IUserService, CosmosUserService>();
+            builder.Services.AddSingleton<IUserService, CosmosUserService>();
+
+            //builder.Services.AddScoped<IInvoiceService, SqlInvoiceService>();
+            builder.Services.AddSingleton<IInvoiceService, CosmosInvoiceService>();
 
             builder.Services.AddScoped<IAuthHandler, BasicAuthHandler>();
-
-            builder.Services.AddScoped<IInvoiceService, SqlInvoiceService>();
 
             builder.Services.AddScoped<IMessagingService, ServiceBusMessagingService>();
 

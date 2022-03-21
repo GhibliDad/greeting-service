@@ -26,7 +26,7 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
         public async Task CreateAsync(Greeting greeting)
         {
-            throw new NotImplementedException();
+            await _container.CreateItemAsync(greeting, new PartitionKey(greeting.Id));
         }
 
         public async Task DeleteAllAsync()
@@ -36,7 +36,7 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
         public async Task DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            await _container.DeleteItemAsync<Greeting>(id, new PartitionKey(id));
         }
 
         public async Task<Greeting> GetAsync(Guid id)
