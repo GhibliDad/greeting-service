@@ -18,6 +18,7 @@ using Serilog.Sinks.AzureBlobStorage;
 using System.Reflection;
 using Azure.Identity;
 using System;
+using Microsoft.Azure.Cosmos;
 
 [assembly: FunctionsStartup(typeof(GreetingService.API.Function.Startup))]
 namespace GreetingService.API.Function
@@ -56,16 +57,17 @@ namespace GreetingService.API.Function
             //builder.Services.AddSingleton<IGreetingRepository, MemoryGreetingRepository>();
             //builder.Services.AddScoped<IGreetingRepository, BlobGreetingRepository>();
             //builder.Services.AddScoped<IGreetingRepository, SqlGreetingRepository>();
-            builder.Services.AddScoped<IGreetingRepository, CosmosGreetingRepository>();
+            builder.Services.AddSingleton<IGreetingRepository, CosmosGreetingRepository>();
 
             //builder.Services.AddScoped<IUserService, AppSettingsUserService>();
             //builder.Services.AddScoped<IUserService, BlobUserService>();
             //builder.Services.AddScoped<IUserService, SqlUserService>();
-            builder.Services.AddScoped<IUserService, CosmosUserService>();
+            builder.Services.AddSingleton<IUserService, CosmosUserService>();
+
+            //builder.Services.AddScoped<IInvoiceService, SqlInvoiceService>();
+            builder.Services.AddSingleton<IInvoiceService, CosmosInvoiceService>();
 
             builder.Services.AddScoped<IAuthHandler, BasicAuthHandler>();
-
-            builder.Services.AddScoped<IInvoiceService, SqlInvoiceService>();
 
             builder.Services.AddScoped<IMessagingService, ServiceBusMessagingService>();
 
@@ -82,6 +84,12 @@ namespace GreetingService.API.Function
 
                 var serviceBusClient = new ServiceBusClient(config["ServiceBusConnectionString"]);
                 return serviceBusClient.CreateSender("main");
+            });
+
+            builder.Services.AddSingleton(c =>
+            {
+                var cosmosClient = new CosmosClient(config["CosmosDbConnectionString"]);
+                return cosmosClient;
             });
         }
 
