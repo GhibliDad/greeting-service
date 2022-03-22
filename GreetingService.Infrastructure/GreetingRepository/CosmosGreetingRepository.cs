@@ -1,6 +1,7 @@
 ﻿using GreetingService.Core.Entities;
 using GreetingService.Core.Interfaces;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -34,6 +35,7 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
         public async Task DeleteAllAsync()
         {
+            //await _container.R
             throw new NotImplementedException();
         }
 
@@ -46,8 +48,12 @@ namespace GreetingService.Infrastructure.GreetingRepository
         {
             try
             {
-                var response = await _container.ReadItemAsync<Greeting>(id, new PartitionKey(id);
-                return response.Resource;
+                var stringId = id.ToString();
+                var response = await _container.ReadItemAsync<Greeting>(stringId, new PartitionKey(stringId));
+
+                //var response = await _container.GetItemLinqQueryable<Greeting>(x => x.Id == id);
+
+                return response;
             }
             catch (CosmosException) //For handling item not found and other exceptions
             {
@@ -69,12 +75,25 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
         public async Task<IEnumerable<Greeting>> GetAsync(string from, string to)
         {
-            throw new NotImplementedException();
+            List<Greeting> greetingList = new();
+            var iterator = _container.GetItemLinqQueryable<Greeting>()
+                .Where(x => x.From.Equals(from, StringComparison.OrdinalIgnoreCase) && x.To.Equals(to, StringComparison.OrdinalIgnoreCase))
+                .ToFeedIterator();
+
+            while (iterator.HasMoreResults)
+            {
+                foreach (var item in await iterator.ReadNextAsync())
+                {
+                    greetingList.Add(item);
+                }
+            }
+            return greetingList;
         }
 
         public async Task UpdateAsync(Greeting greeting)
         {
-            throw new NotImplementedException();
+            var stringId = greeting.Id.ToString();
+            await _container.UpsertItemAsync(greeting, new PartitionKey(stringId));
         }
     }
 }
