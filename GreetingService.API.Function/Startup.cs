@@ -61,11 +61,11 @@ namespace GreetingService.API.Function
 
             //builder.Services.AddScoped<IUserService, AppSettingsUserService>();
             //builder.Services.AddScoped<IUserService, BlobUserService>();
-            //builder.Services.AddScoped<IUserService, SqlUserService>();
-            builder.Services.AddSingleton<IUserService, CosmosUserService>();
+            builder.Services.AddScoped<IUserService, SqlUserService>();
+            //builder.Services.AddSingleton<IUserService, CosmosUserService>();
 
-            //builder.Services.AddScoped<IInvoiceService, SqlInvoiceService>();
-            builder.Services.AddSingleton<IInvoiceService, CosmosInvoiceService>();
+            builder.Services.AddScoped<IInvoiceService, SqlInvoiceService>();
+            //builder.Services.AddSingleton<IInvoiceService, CosmosInvoiceService>();
 
             builder.Services.AddScoped<IAuthHandler, BasicAuthHandler>();
 
