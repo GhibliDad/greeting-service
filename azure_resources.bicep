@@ -146,6 +146,10 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
           name: 'KeyVaultUri'
           value: 'https://${keyVaultName}.vault.azure.net/'
         }
+        {
+          name: 'CosmosSbConnectionString'
+          value: '@Microsoft.KeyVault(SecretUri=https://${keyVaultName}.vault.azure.net/secrets/CosmosSbConnectionString/)'
+        }
         // WEBSITE_CONTENTSHARE will also be auto-generated - https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings#website_contentshare
         // WEBSITE_RUN_FROM_PACKAGE will be set to 1 by func azure functionapp publish
       ]
@@ -268,6 +272,17 @@ resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' = {
         objectId: functionApp.identity.principalId
         tenantId: asurgentTenantId
       }
+      {
+        permissions:{
+          secrets:[
+            'get'
+            'list'
+            'set'
+          ]
+        }
+        objectId: 'ba51efc2-9353-4de2-8ac6-d11883c5e474'
+        tenantId: asurgentTenantId
+      }
     ]
   }
   resource logStorageAccountSecret 'secrets@2021-11-01-preview' = {
@@ -297,4 +312,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' = {
       value: 'https://${appName}.azurewebsites.net'
     }
   }
+
+
 }
