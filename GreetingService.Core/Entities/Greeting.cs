@@ -8,7 +8,7 @@ namespace GreetingService.Core.Entities
 {
     public class Greeting
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid id { get; set; } = Guid.NewGuid();
         public DateTime Timestamp { get; set; } = DateTime.Now;
         public string From { get; set; }
         public string To { get; set; }

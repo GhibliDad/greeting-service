@@ -31,7 +31,7 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
         public async Task CreateAsync(Greeting greeting)
         {
-            await _container.CreateItemAsync(greeting);
+            await _container.UpsertItemAsync(greeting, new PartitionKey(greeting.id.ToString()));
         }
 
         public async Task DeleteAllAsync()
@@ -107,7 +107,7 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
         public async Task UpdateAsync(Greeting greeting)
         {
-            var stringId = greeting.Id.ToString();
+            var stringId = greeting.id.ToString();
             await _container.UpsertItemAsync(greeting, new PartitionKey(stringId));
         }
     }
