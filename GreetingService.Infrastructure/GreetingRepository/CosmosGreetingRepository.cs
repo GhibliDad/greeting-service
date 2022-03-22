@@ -15,17 +15,18 @@ namespace GreetingService.Infrastructure.GreetingRepository
 {
     public class CosmosGreetingRepository : IGreetingRepository
     {
-        private readonly ILogger logger;
-        private const string _cosmosDbName = "greetingscsd";
+        private readonly ILogger _logger;
+        private const string _cosmosDbName = "greetingscdb";
         private const string _cosmosContainerName = "greetings";
         private readonly CosmosClient _cosmosClient;
         private readonly Container _container;
 
         public CosmosGreetingRepository(IConfiguration configuration, ILogger logger, CosmosClient cosmosClient)
         {
-            var _connectionString = configuration["CosmosDbConnectionString"];
-            _cosmosClient = new CosmosClient(_connectionString);
-            _cosmosClient.GetContainer(_cosmosDbName, _cosmosContainerName);
+            //var _connectionString = configuration["CosmosDbConnectionString"];
+            _cosmosClient = cosmosClient;
+            _container = _cosmosClient.GetContainer(_cosmosDbName, _cosmosContainerName);
+            _logger = logger;
         }
 
         public async Task CreateAsync(Greeting greeting)
@@ -75,18 +76,32 @@ namespace GreetingService.Infrastructure.GreetingRepository
 
         public async Task<IEnumerable<Greeting>> GetAsync(string from, string to)
         {
+            var q = "SELECT * FROM c WHERE 1 = 1";
+            var qFrom = $" AND c['From'] = '{from}'";
+            var qTo= $" AND c.To = '{to}'";
+
             List<Greeting> greetingList = new();
-            var iterator = _container.GetItemLinqQueryable<Greeting>()
-                .Where(x => x.From.Equals(from, StringComparison.OrdinalIgnoreCase) && x.To.Equals(to, StringComparison.OrdinalIgnoreCase))
-                .ToFeedIterator();
+
+            if (!string.IsNullOrEmpty(from))
+            {
+                q += qFrom;
+            }
+            
+            if (!string.IsNullOrEmpty(to))
+            {
+                q += qTo;
+            }
+
+            QueryDefinition query = new QueryDefinition(q); 
+
+            var iterator = _container.GetItemQueryIterator<Greeting>(query);
 
             while (iterator.HasMoreResults)
             {
-                foreach (var item in await iterator.ReadNextAsync())
-                {
-                    greetingList.Add(item);
-                }
+                var results = await iterator.ReadNextAsync();
+                greetingList.AddRange(results.ToList());
             }
+            
             return greetingList;
         }
 
