@@ -57,11 +57,11 @@ namespace GreetingService.API.Function.Invoices
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, "Failed to create new invoice for Greeting {id}", greeting.Id);
+                        _logger.LogError(ex, "Failed to create new invoice for Greeting {id}", greeting.id);
                         throw;
                     }                    
                 }
-                else if (!invoice.Greetings.Any(x => x.Id == greeting.Id))
+                else if (!invoice.Greetings.Any(x => x.id == greeting.id))
                 {
                     try
                     {
@@ -70,14 +70,14 @@ namespace GreetingService.API.Function.Invoices
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, "Failed to update invoice {id} with new Greeting {greetingId}", invoice.Id, greeting.Id);
+                        _logger.LogError(ex, "Failed to update invoice {id} with new Greeting {greetingId}", invoice.Id, greeting.id);
                         throw;
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to compute invoice for new greeting {id}", greeting.Id);
+                _logger.LogError(ex, "Failed to compute invoice for new greeting {id}", greeting.id);
                 throw;
             }
         }

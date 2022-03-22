@@ -67,14 +67,14 @@ namespace GreetingService.Infrastructure.Test
         public async Task get_should_return_correct_greeting()
         {
             var expectedGreeting1 = _testData[0];
-            var actualGreeting1 = await _repository.GetAsync(expectedGreeting1.Id);
+            var actualGreeting1 = await _repository.GetAsync(expectedGreeting1.id);
             Assert.NotNull(actualGreeting1);
-            Assert.Equal(expectedGreeting1.Id, actualGreeting1.Id);
+            Assert.Equal(expectedGreeting1.id, actualGreeting1.id);
 
             var expectedGreeting2 = _testData[1];
-            var actualGreeting2 = await _repository.GetAsync(expectedGreeting2.Id);
+            var actualGreeting2 = await _repository.GetAsync(expectedGreeting2.id);
             Assert.NotNull(actualGreeting2);
-            Assert.Equal(expectedGreeting2.Id, actualGreeting2.Id);
+            Assert.Equal(expectedGreeting2.id, actualGreeting2.id);
         }
 
         [Fact]
@@ -109,7 +109,7 @@ namespace GreetingService.Infrastructure.Test
 
             await _repository.UpdateAsync(firstGreeting);
 
-            var firstGreetingAfterUpdate = await _repository.GetAsync(firstGreeting.Id);
+            var firstGreetingAfterUpdate = await _repository.GetAsync(firstGreeting.id);
             Assert.Equal(testMessage, firstGreetingAfterUpdate.Message);
         }
     }

@@ -20,7 +20,7 @@ namespace GreetingService.API.Function
 
             var streamWriter = new StreamWriter(greetingCsvBlob);       //use a StreamWriter to write to a Stream       
             streamWriter.WriteLine("id;from;to;message;timestamp");     //write header row in csv
-            streamWriter.WriteLine($"{greeting.Id};{greeting.From};{greeting.To};{greeting.Message};{greeting.Timestamp}");     //write header row in csv
+            streamWriter.WriteLine($"{greeting.id};{greeting.From};{greeting.To};{greeting.Message};{greeting.Timestamp}");     //write header row in csv
             await streamWriter.FlushAsync();                            //ensure that all data is written before closing the stream
         }
     }
