@@ -147,8 +147,8 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
           value: 'https://${keyVaultName}.vault.azure.net/'
         }
         {
-          name: 'CosmosSbConnectionString'
-          value: '@Microsoft.KeyVault(SecretUri=https://${keyVaultName}.vault.azure.net/secrets/CosmosSbConnectionString/)'
+          name: 'CosmosDbConnectionString'
+          value: '@Microsoft.KeyVault(SecretUri=https://${keyVaultName}.vault.azure.net/secrets/CosmosDbConnectionString/)'
         }
         // WEBSITE_CONTENTSHARE will also be auto-generated - https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings#website_contentshare
         // WEBSITE_RUN_FROM_PACKAGE will be set to 1 by func azure functionapp publish
